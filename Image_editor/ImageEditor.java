@@ -1,6 +1,7 @@
 //package edu.byu.cs.imageeditor.studentCode;
 
 import java.io.*;
+import java.util.Scanner;
 
 /**
  * Created by Cory on 9/8/16.
@@ -9,9 +10,8 @@ public class ImageEditor {
 
     public Image myImage;
 
-    public void load(BufferedReader bufferedReader) {
-
-        myImage = new Image(bufferedReader);
+    public void load(Scanner scan) {
+        myImage = new Image(scan);
     }
     public void invert(String outputFileName) throws IOException {
         myImage.invert();
@@ -31,7 +31,6 @@ public class ImageEditor {
     }
 
     public static void main(String args[]) {
-        System.out.println("Hello there");
         String inputFileName = args[0];
         String outputFileName = args[1];
         String function = args[2];
@@ -43,8 +42,9 @@ public class ImageEditor {
         ImageEditor ie = new ImageEditor();
         try {
             FileReader fr = new FileReader(inputFileName);
-            BufferedReader br = new BufferedReader(fr);
-            ie.load(br);
+            Scanner scan = new Scanner(fr);
+            scan.useDelimiter("(\\s+)(#[^\\n]*\\n)?(\\s*)|(#[\\n]*\\n)(\\s*)");
+            ie.load(scan);
             System.out.println("Done loading file: " + inputFileName);
             switch (function) {
                 case "invert": ie.invert(outputFileName);

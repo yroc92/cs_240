@@ -1,6 +1,7 @@
 //package edu.byu.cs.imageeditor.studentCode;
 
 import java.io.*;
+import java.util.Scanner;
 
 public class Image {
     public Pixel[][] pixels;
@@ -8,40 +9,25 @@ public class Image {
     public int width;
     public int height;
 
-    public Image (BufferedReader br) {
-        try {
-            br.readLine();               // Pass over file type
-            String maybeComment = br.readLine();
-            String[] sizes;
-            if (maybeComment.contains("#")) {
-                sizes = br.readLine().split(" ");
-            } else {
-                sizes = maybeComment.split(" ");
+    public Image (Scanner scan) {
+        scan.next();               // Pass over file type
+        width = scan.nextInt();
+        height = scan.nextInt();
+        scan.next();              // Pass over max color val
+        pixels = new Pixel[height][width];
+        // You might need to convert things to string first
+
+        for (int h = 0; h < height; h++) {
+            for (int w = 0; w < width; w++) {
+                int red = scan.nextInt();
+                int green = scan.nextInt();
+                int blue = scan.nextInt();
+                pixels[h][w] = new Pixel(red, green, blue);
             }
-//            br.readLine();               // Pass over comment
-
-            width = Integer.parseInt(sizes[0]);
-            height = Integer.parseInt(sizes[1]);
-            br.readLine();              // Pass over max color val
-            pixels = new Pixel[height][width];
-            // You might need to convert things to string first
-
-            for (int h = 0; h < height; h++) {
-                for (int w = 0; w < width; w++) {
-                    int red = Integer.parseInt(br.readLine());
-                    int green = Integer.parseInt(br.readLine());
-                    int blue = Integer.parseInt(br.readLine());
-//                    int red = 5;
-//                    int green = 10;
-//                    int blue = 15;
-                    pixels[h][w] = new Pixel(red, green, blue);
-                }
-            }
-            pixelsTemp = new Pixel[height][width];
-        } catch (IOException e) {
-
-            e.printStackTrace();
         }
+        System.out.println("Width, height: " + width + " " + height);
+        pixelsTemp = new Pixel[height][width];
+        scan.close();
     }
 
     public void invert()  {
