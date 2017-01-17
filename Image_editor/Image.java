@@ -11,8 +11,15 @@ public class Image {
     public Image (BufferedReader br) {
         try {
             br.readLine();               // Pass over file type
-            br.readLine();               // Pass over comment
-            String [] sizes = br.readLine().split(" ");
+            String maybeComment = br.readLine();
+            String[] sizes;
+            if (maybeComment.contains("#")) {
+                sizes = br.readLine().split(" ");
+            } else {
+                sizes = maybeComment.split(" ");
+            }
+//            br.readLine();               // Pass over comment
+
             width = Integer.parseInt(sizes[0]);
             height = Integer.parseInt(sizes[1]);
             br.readLine();              // Pass over max color val
