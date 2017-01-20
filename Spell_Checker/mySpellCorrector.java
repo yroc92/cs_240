@@ -1,8 +1,6 @@
-package cs240.byu.edu.spellcorrector_startingcode_android.StudentPackage;
+//package cs240.byu.edu.spellcorrector_startingcode_android.StudentPackage;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
+import java.io.*;
 
 /**
  * Created by Cory on 9/12/16.
@@ -10,9 +8,11 @@ import java.io.InputStreamReader;
 public class mySpellCorrector implements ISpellCorrector {
     Dictionary myDictionary = new Dictionary();
 
-    public void useDictionary(InputStreamReader dictionaryFile) {
-        BufferedReader br = new BufferedReader(dictionaryFile);
+//    public void useDictionary(InputStreamReader dictionaryFile) {
+    public void useDictionary(String fileName) {
         try {
+            FileReader fr = new FileReader(new File(fileName));
+            BufferedReader br = new BufferedReader(fr);
             myDictionary.clear();
             String line;
             while ((line = br.readLine()) != null) {

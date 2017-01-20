@@ -1,4 +1,4 @@
-package cs240.byu.edu.spellcorrector_startingcode_android.StudentPackage;
+//package cs240.byu.edu.spellcorrector_startingcode_android.StudentPackage;
 
 import java.util.ArrayList;
 import java.util.Arrays;
