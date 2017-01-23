@@ -1,8 +1,8 @@
-//package spell;
+package spell;
 
 import java.io.IOException;
 
-//import spell.ISpellCorrector.NoSimilarWordFoundException;
+import spell.ISpellCorrector.NoSimilarWordFoundException;
 
 /**
  * A simple main class for running the spelling corrector. This class is not
@@ -14,7 +14,7 @@ public class Main {
 	 * Give the dictionary file name as the first argument and the word to correct
 	 * as the second argument.
 	 */
-	public static void main(String[] args) throws IOException, ISpellCorrector.NoSimilarWordFoundException {
+	public static void main(String[] args) throws IOException, NoSimilarWordFoundException {
 		
 		String dictionaryFileName = args[0];
 		String inputWord = args[1];

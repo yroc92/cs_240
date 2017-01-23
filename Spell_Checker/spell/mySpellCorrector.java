@@ -1,6 +1,9 @@
-//package cs240.byu.edu.spellcorrector_startingcode_android.StudentPackage;
+package spell;
 
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
 
 /**
  * Created by Cory on 9/12/16.
