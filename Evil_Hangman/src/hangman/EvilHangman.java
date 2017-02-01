@@ -19,7 +19,7 @@ import java.util.Set;
 public class EvilHangman implements StudentEvilHangmanGameController {
     public ArrayList<String> myDictionary = new ArrayList<>();
     private Set<Character> usedLetters = new HashSet<>();
-
+    public char currentGuess;
     private HashMap<String, HashSet<String>> partitions = new HashMap<>();
 
     private String currentWord;
@@ -95,17 +95,19 @@ public class EvilHangman implements StudentEvilHangmanGameController {
 
 
     public Set<String> makeGuess(char guess) throws GuessAlreadyMadeException {
-
+        currentGuess = guess;
         if (guessMade(guess)) throw new GuessAlreadyMadeException();
         partitions.clear();
         numGuesses--;
 
+        int numCorrect=0;
         StringBuilder key = new StringBuilder();
         for (int i = 0; i < myDictionary.size(); i++) {
             String currWord = myDictionary.get(i);
             for (int j = 0; j < currWord.length(); j++) {
                 if (currWord.charAt(j) == guess) {
                     key.append(guess);
+                    numCorrect++;
                 } else {
                     key.append('-');
                 }
@@ -155,12 +157,20 @@ public class EvilHangman implements StudentEvilHangmanGameController {
 
     private void updateCurrentWord (String key) {
         StringBuilder sb = new StringBuilder();
+        int numCorrect = 0;
         for (int i = 0; i < currentWord.length(); i++) {
             if (key.charAt(i) == '-') {
                 sb.append(currentWord.charAt(i));
             } else {
                 sb.append(key.charAt(i));
+                numCorrect++;
             }
+        }
+        System.out.println("Here i am!!!!");
+        if (numCorrect != 0) {
+            System.out.println("Yes, there is " +Integer.toString(numCorrect) + " "+ currentGuess);
+        } else {
+            System.out.println("Sorry, there are no " + currentGuess + "'s");
         }
         currentWord = sb.toString();
     }
