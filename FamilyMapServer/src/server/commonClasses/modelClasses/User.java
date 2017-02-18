@@ -27,6 +27,7 @@ public class User {
     private String token;
     /*
     The gender and personal ID of the user.
+    Gender can be male ("m") or female ("f")
      */
     private String gender;
     private String personID;
