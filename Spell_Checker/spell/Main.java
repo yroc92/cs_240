@@ -11,7 +11,8 @@ import spell.ISpellCorrector.NoSimilarWordFoundException;
 public class Main {
 	
 	/**
-	 * Give the dictionary file name as the first argument and the word to correct
+	 * Give the dictionary file name as the first argument and the word
+	 * correct
 	 * as the second argument.
 	 */
 	public static void main(String[] args) throws IOException, NoSimilarWordFoundException {
