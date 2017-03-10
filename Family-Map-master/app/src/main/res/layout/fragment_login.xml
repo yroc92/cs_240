@@ -1,0 +1,97 @@
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content">
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingLeft="16dp"
+    android:paddingTop="16dp"
+    android:paddingRight="16dp"
+    android:paddingBottom="16dp"
+    tools:context=".ui.fragments.LoginFragment"
+    style="@style/DefaultText">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:text="User Name:"
+            android:id="@+id/userNameTextView"
+            android:gravity="center_vertical"
+            android:layout_row="0"
+            android:layout_column="0" />
+
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/userName"
+            android:inputType="textAutoComplete"
+            android:layout_toRightOf="@id/userNameTextView"
+            android:layout_alignParentRight="true"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:text="Password:"
+            android:id="@+id/passwordTextView"
+            android:layout_below="@id/userName" />
+
+
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/password"
+            android:inputType="textPassword"
+            android:layout_toRightOf="@id/passwordTextView"
+            android:layout_alignParentRight="true"
+            android:layout_below="@id/userName"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:text="Server Host:"
+            android:id="@+id/serverHostTextView"
+            android:layout_below="@id/password"/>
+
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/serverHost"
+            android:inputType="textAutoComplete"
+            android:layout_toRightOf="@id/serverHostTextView"
+            android:layout_alignParentRight="true"
+            android:layout_below="@id/password"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:text="Server Port:"
+            android:id="@+id/serverPortTextView"
+            android:layout_below="@id/serverHost"/>
+
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/serverPort"
+            android:inputType="number"
+            android:layout_alignParentRight="true"
+            android:layout_below="@id/serverHost"
+            android:layout_toRightOf="@id/serverPortTextView"/>
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Log in"
+            android:id="@+id/logInButton"
+            android:layout_gravity="center"
+            android:layout_below="@id/serverPort"
+            android:layout_centerHorizontal="true"/>
+
+</RelativeLayout>
+</ScrollView>

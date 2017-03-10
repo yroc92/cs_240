@@ -1,10 +1,16 @@
 package server.serverSideOnlyClasses;
 
+import com.sun.net.httpserver.HttpExchange;
+import com.sun.net.httpserver.HttpHandler;
+import com.sun.net.httpserver.HttpServer;
 import server.commonClasses.modelClasses.AuthToken;
 import server.commonClasses.modelClasses.Event;
 import server.commonClasses.modelClasses.Person;
 import server.commonClasses.modelClasses.User;
 
+import java.io.IOException;
+import java.net.HttpURLConnection;
+import java.net.InetSocketAddress;
 import java.util.ArrayList;
 
 /**
@@ -12,13 +18,47 @@ import java.util.ArrayList;
  *
  * This class is used to initiate communication with the Family Map Server
  */
+
 public class ServerCommunicator {
+    // TODO: You need public strings that have directory paths like HTTP_ROOT here
+    public static final int SERVER_PORT_NUMBER = 8080;
+    private static final int MAX_WAITING_CONNECTIONS = 10;
+    private HttpServer server;
+
     /*
     Generic constructor.
      */
     public ServerCommunicator() {
     }
 
+    private void run() {
+        setupServer(SERVER_PORT_NUMBER, MAX_WAITING_CONNECTIONS);
+        setupContext();
+        server.start();
+    }
+
+    private void setupServer(int portNumber, int maxWaitingConnections) {
+        try {
+            server = HttpServer.create(new InetSocketAddress(portNumber), maxWaitingConnections);
+        } catch (IOException e) {
+            System.out.println("Couldn't create server " + e.getMessage());
+            e.printStackTrace();
+            return;
+        }
+        server.setExecutor(null);   // use default executor
+    }
+
+    private HttpHandler serverHandler = new HttpHandler() {
+        @Override
+        public void handle(HttpExchange httpExchange) throws IOException {
+            System.out.println("Server up!");
+            httpExchange.sendResponseHeaders(HttpURLConnection.HTTP_OK, -1);
+        }
+    };
+
+    private void setupContext() {
+        server.createContext("/", serverHandler);
+    }
     /*
      Users must register in order to use Family Map.
      @param user is required for registration to complete.
@@ -64,5 +104,9 @@ public class ServerCommunicator {
      */
     public ArrayList<Event> getAllEvents(String personID) {
         return null;
+    }
+
+    public static void main(String[] args) {
+        new ServerCommunicator().run();
     }
 }

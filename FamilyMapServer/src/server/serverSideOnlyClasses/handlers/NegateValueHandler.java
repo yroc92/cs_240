@@ -15,7 +15,7 @@ public class NegateValueHandler {
     }
 
     /*
-    Handles the event of a nagated value as a result of an HTTP exchange.
+    Handles the event of a negative value as a result of an HTTP exchange.
     */
     public void handle(HttpExchange exchange) {
 
