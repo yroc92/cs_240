@@ -85,7 +85,7 @@ public class ClientCommunicator {
 
 //Auxiliary Constants, Attributes, and Methods
 	private static final String SERVER_HOST = "localhost";
-	private static final String URL_PREFIX = "http://" + SERVER_HOST + ":" + ServerSingleton.SERVER_PORT_NUMBER+"/";
+	private static final String URL_PREFIX = "http://" + SERVER_HOST + ":" + ServerSingleton.SERVER_PORT_NUMBER ;
 	private static final String HTTP_POST = "POST";
 	private static final String COMMAND_HANDLER_DESIGNATOR = "/";
 }

@@ -5,22 +5,19 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.InetSocketAddress;
 import java.net.URI;
-import java.util.ArrayList;
 
-import com.google.gson.Gson;
-import com.sun.net.httpserver.Headers;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 import com.sun.net.httpserver.HttpServer;
-import server.commonClasses.modelClasses.Person;
-import server.commonClasses.modelClasses.User;
+import server.commonClasses.resourceClasses.UserResource;
 
 public class ServerCommunicator {
 
 	public static final int SERVER_PORT_NUMBER = 8080;
 	private static final int MAX_WAITING_CONNECTIONS = 10;
 	private HttpServer server;
-	
+	private UserResource userResource = new UserResource();
+
 	ServerCommunicator() {}
 
 	private void run() {
@@ -53,18 +50,18 @@ public class ServerCommunicator {
 			System.out.println("Path= " + path);
 
 			String [] pathParts = path.split("/");
-			StringBuilder pathSegments = new StringBuilder();
-			for (int i = 0; i < pathParts.length; i++ ) {
-				pathSegments.append(pathParts[i]);
-				if (i < pathParts.length - 1) {
-					pathSegments.append(", ");
-				}
-			}
-			System.out.println("Path parts = " + pathSegments.toString());
+//			StringBuilder pathSegments = new StringBuilder();
+//			for (int i = 0; i < pathParts.length; i++ ) {
+//				pathSegments.append(pathParts[i]);
+//				if (i < pathParts.length - 1) {
+//					pathSegments.append(", ");
+//				}
+//			}
+//			System.out.println("Path parts = " + pathSegments.toString());
 
 			// Get auth key
 			// TODO: handle authorization
-//			Headers headers = exchange.getRequestHeaders();
+//			Headers headers = exchange.getRequestHeaders().getFirst(ClientCommunicator.AUTHORIZATION_KEY);
 //			String authorizationCode = headers.getFirst(ClientCommunicator.AUTHORIZATION_KEY);
 //			System.out.println("The authorization code in sendingObjectsHandler = " + authorizationCode);
 
@@ -73,42 +70,44 @@ public class ServerCommunicator {
 			inputStreamReader.close();
 
 			// Case statements for the different endpoints
+			if ( pathParts.length < 2 ) {
+				exchange.sendResponseHeaders(HttpURLConnection.HTTP_NOT_FOUND, -1);
+				return;
+			}
+			switch (pathParts[1]) {
+				case "user":
+					userResource.handle(exchange,pathParts);
 
-			switch (path) {
-				case "/":
+					return;
 
+				case "clear":
 					break;
-				case "/user/register":
-					registerUser(new User(inputStreamReader));
 
+				case  "fill":
 					break;
-				case "/user/login":
 
+				case "load":
 					break;
-				case "/clear":
+
+				case "person":
 					break;
-				case  "/fill":
-					break;
-				case "/load":
-					break;
-				case "/person":
-					break;
-				case "/event":
+
+				case "event":
 					break;
 
 				default:
 					// 404 error
-//					result = getBytesFromFile("/404.html");
 					System.out.println("Unknown path + " + path);
+					exchange.sendResponseHeaders(HttpURLConnection.HTTP_NOT_FOUND, -1);
 			}
 
 
 
 
-			System.out.println("Hello World");
-			Object response = "funnest ever";
-			//-1 means the response body is empty
-			exchange.sendResponseHeaders(HttpURLConnection.HTTP_OK, -1);
+//			System.out.println("Hello World");
+//			Object response = "funnest ever";
+//			//-1 means the response body is empty
+//			exchange.sendResponseHeaders(HttpURLConnection.HTTP_OK, -1);
 		}
 	};
 	
@@ -121,7 +120,7 @@ public class ServerCommunicator {
  Users must register in order to use Family Map.
  @param user is required for registration to complete.
  */
-	public void registerUser(server.commonClasses.modelClasses.User user) {}
+
 
 	/*
 //    A user can login by providing their credentials (username and password).

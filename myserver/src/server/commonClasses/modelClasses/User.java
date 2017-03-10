@@ -52,7 +52,7 @@ public class User {
 
     // Constructor with JSON data provided in the form of an input stream reader
     public User(InputStreamReader inputStreamReader) {
-        Person person = (Person)gson.fromJson(inputStreamReader, Person.class);
+//        Person person = (Person)gson.fromJson(inputStreamReader, Person.class);
     }
 
     public String getUsername() {
