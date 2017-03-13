@@ -1,9 +1,14 @@
 package server;
 
+import com.google.gson.Gson;
 import com.google.gson.JsonIOException;
 import com.google.gson.JsonSyntaxException;
+import server.commonClasses.modelClasses.Person;
+import server.commonClasses.modelClasses.User;
+import sun.plugin2.util.PojoUtil;
 
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -24,7 +29,7 @@ public class ClientCommunicator {
 	public Object send() {
 		Object response = null;
 		HttpURLConnection connection =
-			openConnection(COMMAND_HANDLER_DESIGNATOR, HTTP_POST, false);
+			openConnection(COMMAND_HANDLER_DESIGNATOR, HTTP_POST, true);
 		response = getResponse(connection);
 
 		return response;
@@ -40,6 +45,7 @@ public class ClientCommunicator {
 			result = (HttpURLConnection)url.openConnection();
 			result.setRequestMethod(requestMethod);
 			result.setDoOutput(sendingSomthingToServer);
+			sendToServerCommunicator(result, new User("Robby", "OG", "fjek3j4", "m", "dane", "dane", "dane", "dane"));
 			result.connect();
 		} catch (MalformedURLException e) {
 			e.printStackTrace();
@@ -48,6 +54,24 @@ public class ClientCommunicator {
 		}
 
 		return result;
+	}
+
+	private void sendToServerCommunicator(HttpURLConnection connection,
+										  Object objectToSend)
+	{
+		PrintWriter printWriter = null;
+		try {
+			printWriter = new PrintWriter(connection.getOutputStream());
+			//Encoding in JSON
+			Gson gson = new Gson();
+			gson.toJson(objectToSend, printWriter);
+		} catch (IOException e) {
+			e.printStackTrace();
+		} finally {
+			if(printWriter != null) {
+				printWriter.close();
+			}
+		}
 	}
 	
 	private Object getResponse(HttpURLConnection connection) {
@@ -85,7 +109,7 @@ public class ClientCommunicator {
 
 //Auxiliary Constants, Attributes, and Methods
 	private static final String SERVER_HOST = "localhost";
-	private static final String URL_PREFIX = "http://" + SERVER_HOST + ":" + ServerSingleton.SERVER_PORT_NUMBER ;
+	private static final String URL_PREFIX = "http://" + SERVER_HOST + ":" + ServerSingleton.SERVER_PORT_NUMBER + "/user/register" ;
 	private static final String HTTP_POST = "POST";
 	private static final String COMMAND_HANDLER_DESIGNATOR = "/";
 }

@@ -9,6 +9,7 @@ import java.net.URI;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 import com.sun.net.httpserver.HttpServer;
+import server.commonClasses.DaoClasses.UserDAO;
 import server.commonClasses.resourceClasses.UserResource;
 
 public class ServerCommunicator {
@@ -65,10 +66,6 @@ public class ServerCommunicator {
 //			String authorizationCode = headers.getFirst(ClientCommunicator.AUTHORIZATION_KEY);
 //			System.out.println("The authorization code in sendingObjectsHandler = " + authorizationCode);
 
-			InputStreamReader inputStreamReader = new InputStreamReader(exchange.getRequestBody());
-
-			inputStreamReader.close();
-
 			// Case statements for the different endpoints
 			if ( pathParts.length < 2 ) {
 				exchange.sendResponseHeaders(HttpURLConnection.HTTP_NOT_FOUND, -1);
@@ -77,8 +74,7 @@ public class ServerCommunicator {
 			switch (pathParts[1]) {
 				case "user":
 					userResource.handle(exchange,pathParts);
-
-					return;
+					break;
 
 				case "clear":
 					break;
@@ -102,12 +98,12 @@ public class ServerCommunicator {
 			}
 
 
-
-
 //			System.out.println("Hello World");
 //			Object response = "funnest ever";
 //			//-1 means the response body is empty
 //			exchange.sendResponseHeaders(HttpURLConnection.HTTP_OK, -1);
+
+			exchange.close();
 		}
 	};
 	
@@ -116,52 +112,6 @@ public class ServerCommunicator {
 		server.createContext("/", serverHandler);
 	}
 
-	/*
- Users must register in order to use Family Map.
- @param user is required for registration to complete.
- */
-
-
-	/*
-//    A user can login by providing their credentials (username and password).
-//     */
-//	public void login(String username, String password) {}
-//
-//	/*
-//    By providing personID, a person can be found in the database.
-//     */
-//	public Person getPerson(String personID) {
-//		return null;
-//	}
-//
-//	/*
-//    Returns a list of all the family members of the given person per their personID
-//     */
-//	public ArrayList<Person> getAllFamilyMembers(String personID) {
-//		return null;
-//	}
-//
-//	/*
-//     Deletes ALL data from the database, including user accounts, auth tokens, and
-//    generated person and event data.
-//     */
-//	public void clear() {
-//	}
-//
-//	/*
-//    <p>Populates the server's database with generated data for the specified user name.
-//    The required "username" parameter must be a user already registered with the server. If there is
-//    any data in the database already associated with the given user name, it is deleted.</p>
-//     */
-//	public void fill(String username) {
-//	}
-//
-//	/*
-//    Returns list of all events related to a person and their family members, by way of the person's ID
-//     */
-//	public ArrayList<Event> getAllEvents(String personID) {
-//		return null;
-//	}
 	
 	public static void main(String[] args) {
 		new ServerCommunicator().run();

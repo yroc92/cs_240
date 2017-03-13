@@ -1,7 +1,9 @@
 package server.commonClasses.modelClasses;
 
+import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 
+import java.io.InputStream;
 import java.io.InputStreamReader;
 
 /**
@@ -12,8 +14,8 @@ import java.io.InputStreamReader;
  */
 public class User {
     /*
-    Username and password authentication
-     */
+        Username and password authentication
+         */
     private String username;
     private String password;
     /*
@@ -50,15 +52,7 @@ public class User {
         this.personID = personID;
     }
 
-    // Constructor with JSON data provided in the form of an input stream reader
-    public User(InputStreamReader inputStreamReader) {
-//        Person person = (Person)gson.fromJson(inputStreamReader, Person.class);
-    }
-
-    public String getUsername() {
-
-        return username;
-    }
+    public String getUsername() { return username; }
 
     public void setUsername(String username) {
         this.username = username;
