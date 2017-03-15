@@ -35,6 +35,7 @@ public class PersonDAO {
 
             insert.execute();
             db.commitSqlStatement(insert);
+            insert.close();
         } catch (SQLException e) {
             System.err.println("Could not add person");
             e.printStackTrace();

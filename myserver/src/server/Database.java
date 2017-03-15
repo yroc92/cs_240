@@ -66,7 +66,7 @@ public class Database {
      */
     public int getGeneratedKey() throws SQLException
     {
-        PreparedStatement getGeneratedKeys = this.prepare("SELECT last_insert_rowid()");
+        PreparedStatement getGeneratedKeys = prepare("SELECT last_insert_rowid()");
         ResultSet rs = getGeneratedKeys.executeQuery();
         int key = -1;
 
@@ -151,8 +151,6 @@ public class Database {
             commitSqlStatement();
         } catch (Exception e) {
             System.err.println(e.getMessage());
-            e.printStackTrace();
-            System.err.println("Could not create person table. Might already exist.");
         }
     }
 
@@ -165,9 +163,22 @@ public class Database {
             commitSqlStatement();
         } catch (Exception e) {
             System.err.println(e.getMessage());
-            e.printStackTrace();
-            System.err.println("Couldn't create User table. Might already exist.");
         }
+    }
+
+    /*
+    Checks the Person table in the database for the highest personID value and returns it.
+     */
+    public int getMaxPersonID() throws SQLException {
+        String sqlStatement = "SELECT MAX(personID) FROM person";
+        PreparedStatement getMax = prepare(sqlStatement);
+        ResultSet rs = getMax.executeQuery();
+        int max = 0;
+        if (rs.next()) {
+            max = rs.getInt(4);
+        }
+        getMax.close();
+        return max;
     }
 
 }

@@ -9,6 +9,7 @@ import server.commonClasses.GsonEncodeDecoder;
 import server.commonClasses.modelClasses.Person;
 import server.commonClasses.modelClasses.User;
 import server.services.AuthService;
+import server.services.IdGenerator;
 
 import javax.xml.crypto.Data;
 import java.io.IOException;
@@ -60,10 +61,10 @@ public class UserResource {
         try {
             InputStreamReader inputStreamReader = new InputStreamReader(exchange.getRequestBody());
             User newUser = gson.fromJson(inputStreamReader, User.class);
+            newUser.setPersonID(IdGenerator.ID_GENERATOR.getNewId());   // Give user an Id
             inputStreamReader.close();
             db.getUserDao().addUser(newUser);  // Add user to database
             db.getPersonDAO().addPersonFromUser(newUser);   // Create the corresponding person profile
-//            db.getPersonDAO().addPerson());
 //            createGenerations(newUser, 4); // Generate history of 4 generations
             PrintWriter printWriter = new PrintWriter(exchange.getResponseBody());
             gson.toJson(newUser, printWriter); // Write response

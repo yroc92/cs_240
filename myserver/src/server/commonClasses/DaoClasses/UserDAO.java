@@ -34,6 +34,7 @@ public class UserDAO {
 
             insert.execute();
             db.commitSqlStatement(insert);
+            insert.close();
         } catch (SQLException e) {
             e.printStackTrace();
             db.rollback();
@@ -47,6 +48,7 @@ public class UserDAO {
             PreparedStatement preparedStatement = db.prepare(sqlStatement);
             preparedStatement.setInt(1, id);
             ResultSet rs = preparedStatement.executeQuery(sqlStatement);
+            preparedStatement.close();
             return rs.getString("username");
         } catch (SQLException e) {
             e.printStackTrace();
