@@ -1,7 +1,5 @@
 package server.commonClasses.modelClasses;
 
-import java.util.ArrayList;
-
 /**
  * Created by Cory on 2/17/17.
  *
@@ -16,27 +14,34 @@ public class Person {
     /*
     Identification number of the person.
      */
-    private String personID;
+    private int personID;
     /*
     Gender of the person.
      */
     private String gender;
     /*
     The following family relationships are all optional, and are initially null.
+    The string refers to their unique identifiers.
      */
-    private Person father;
-    private Person mother;
-    private Person spouse;
-    private ArrayList<String> children;
+    private int father;
+    private int mother;
+    private int spouse;
+
+    // User to which this person belongs
+    private String descendant;
 
     /*
-    Constructer that takes in all fields as parameters other than the family relationships.
+    Constructor that takes in all fields as parameters other than the family relationships.
      */
-    public Person(String firstName, String lastName, String personID, String gender) {
+    public Person(String firstName, String lastName, int personID, String gender, String username) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.personID = personID;
         this.gender = gender;
+        this.descendant = username;
+        this.father = 0;
+        this.mother = 0;
+        this.spouse = 0;
     }
 
     public String getFirstName() {
@@ -55,11 +60,11 @@ public class Person {
         this.lastName = lastName;
     }
 
-    public String getPersonID() {
+    public int getPersonID() {
         return personID;
     }
 
-    public void setPersonID(String personID) {
+    public void setPersonID(int personID) {
         this.personID = personID;
     }
 
@@ -71,36 +76,35 @@ public class Person {
         this.gender = gender;
     }
 
-    public Person getFather() {
+    public String getDescendant() {
+        return descendant;
+    }
+
+    public void setDescendant(String descendant) {
+        this.descendant = descendant;
+    }
+
+    public int getFather() {
         return father;
     }
 
-    public void setFather(Person father) {
+    public void setFather(int father) {
         this.father = father;
     }
 
-    public Person getMother() {
+    public int getMother() {
         return mother;
     }
 
-    public void setMother(Person mother) {
+    public void setMother(int mother) {
         this.mother = mother;
     }
 
-    public Person getSpouse() {
+    public int getSpouse() {
         return spouse;
     }
 
-    public void setSpouse(Person spouse) {
+    public void setSpouse(int spouse) {
         this.spouse = spouse;
     }
-
-    public ArrayList<String> getChildren() {
-        return children;
-    }
-
-    public void setChildren(ArrayList<String> children) {
-        this.children = children;
-    }
-
 }

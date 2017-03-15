@@ -1,19 +1,35 @@
 package server;
 
+import server.commonClasses.DaoClasses.PersonDAO;
 import server.commonClasses.DaoClasses.UserDAO;
+import server.commonClasses.modelClasses.Person;
 
-import javax.swing.text.StyleContext;
-import javax.xml.crypto.Data;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
 
 /**
  * Created by Cory on 3/11/17.
  */
 public class Database {
-    static {
+
+    public static Connection conn;
+
+
+    private UserDAO userDao;
+    private PersonDAO personDAO;
+    //TODO: add event dao for creating tables
+
+    public Database() {
+        Database.init();
+        userDao = new UserDAO(this);
+        personDAO = new PersonDAO(this);
+    }
+
+    public static void init() {
+
+        if (Database.conn != null) {
+            return;
+        }
+
         try {
             final String driver = "org.sqlite.JDBC";
             Class.forName(driver);
@@ -21,21 +37,13 @@ public class Database {
         catch(ClassNotFoundException e) {
             e.printStackTrace();
         }
+
+        openConnection();
+        createAllTables();
     }
 
-    private Connection conn;
-    private UserDAO userDao;
 
-    // Create singleton instance
-    private static Database db = new Database();
-    // Private constructor for singleton creation
-    private Database() {}
-    // Return singleton
-    public static Database getInstance(){
-        return db;
-    }
-
-    public void openConnection() {
+    private static void openConnection() {
         try {
             final String CONNECTION_URL = "jdbc:sqlite:familymap.sqlite";
 
@@ -51,61 +59,115 @@ public class Database {
         }
     }
 
-    public void closeConnection(boolean commit) {
-        try {
-            if (commit) {
-                conn.commit();
-            }
-            else {
-                conn.rollback();
-            }
+    /**
+     * Gets the last inserted value.
+     * @return The generated key (only the most recent), -1 otherwise
+     * @throws SQLException
+     */
+    public int getGeneratedKey() throws SQLException
+    {
+        PreparedStatement getGeneratedKeys = this.prepare("SELECT last_insert_rowid()");
+        ResultSet rs = getGeneratedKeys.executeQuery();
+        int key = -1;
 
-            conn.close();
-            conn = null;
+        if (rs.next())
+        {
+            key = rs.getInt(1);
         }
-        catch (SQLException e) {
-            System.out.println("closeConnection failed");
+
+        getGeneratedKeys.close();	// Very important to do when we're done! Otherwise 'SQL logic error or missing database'
+        return key;
+    }
+    public static void commitSqlStatement() throws SQLException {
+        Database.conn.commit();
+    }
+
+    public void commitSqlStatement(Statement statement) throws SQLException {
+        statement.close();
+        Database.conn.commit();
+    }
+
+    public void rollback() {
+        try {
+            Database.conn.rollback();
+        } catch (SQLException e) {
+            System.err.println("Unable to rollback: " + e.getMessage());
             e.printStackTrace();
         }
     }
 
-
-//    public void createTables() {
-//        try {
-//            Statement stmt = null;
-//            try {
-//                stmt = conn.createStatement();
-//                stmt.executeUpdate(userDao.createTable());
-//            }
-//            finally {
-//                if (stmt != null) {
-//                    stmt.close();
-//                    stmt = null;
-//                }
-//            }
-//        }
-//        catch (SQLException e) {
-//            System.out.println("createTables failed");
-//            e.printStackTrace();
-//        }
-//    }
-
+    public PreparedStatement prepare(String sql) {
+        try {
+            return Database.conn.prepareStatement(sql, ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_READ_ONLY);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
 
 //    public void addPerson() {}
 //    public void addEvent() {}
 //    public void authToken() {}
 
-    public void executeSqlStatement(String statement) throws SQLException {
+
+
+//    public void executeSqlStatement(String statement) throws SQLException {
+//        Statement stmt = conn.createStatement();
+//        commitSqlStatement(stmt);
+//
+//    }
+    //TODO Make Id generator
+
+    public static void createAllTables() {
         try {
-            openConnection();
-            Statement stmt = conn.createStatement();
-            stmt.executeUpdate(statement);
-            closeConnection(true);
-        } catch (SQLException e) {
-            closeConnection(false);
-            throw e;
+            createUserTable();
+            createPersonTable();
+        } catch (Exception e) {
+            System.err.println("Could not create all tables");
         }
     }
 
-    //TODO Make Id generator
+    public UserDAO getUserDao() {
+        return userDao;
+    }
+
+    public PersonDAO getPersonDAO() {
+        return personDAO;
+    }
+
+     private static void createPersonTable() {
+        StringBuilder sqlStatement = new StringBuilder();
+        sqlStatement.append("CREATE TABLE 'person' (")
+                .append("'firstName' TEXT NOT NULL, ")
+                .append("'lastName' TEXT NOT NULL, ")
+                .append("'gender' TEXT NOT NULL, ")
+                .append("'descendant' TEXT NOT NULL, ")
+                .append("'personID' INTEGER, ")
+                .append("'fatherID' INTEGER, ")
+                .append("'motherID' INTEGER, ")
+                .append("'spouseID' INTEGER)");
+        try {
+            Database.conn.prepareStatement(sqlStatement.toString()).execute();
+            commitSqlStatement();
+        } catch (Exception e) {
+            System.err.println(e.getMessage());
+            e.printStackTrace();
+            System.err.println("Could not create person table. Might already exist.");
+        }
+    }
+
+    private static void createUserTable() {
+        String sql = "CREATE TABLE 'user' ('username' TEXT NOT NULL PRIMARY KEY, 'password' TEXT NOT NULL, " +
+                "'email' TEXT NOT NULL, 'firstName' TEXT NOT NULL, 'lastName' TEXT NOT NULL, 'token' TEXT NOT NULL," +
+                "'gender' TEXT NOT NULL, 'personID' INTEGER)";
+        try {
+            Database.conn.prepareStatement(sql).execute();
+            commitSqlStatement();
+        } catch (Exception e) {
+            System.err.println(e.getMessage());
+            e.printStackTrace();
+            System.err.println("Couldn't create User table. Might already exist.");
+        }
+    }
+
 }

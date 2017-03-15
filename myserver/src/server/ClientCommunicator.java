@@ -37,15 +37,15 @@ public class ClientCommunicator {
 	
 	private HttpURLConnection openConnection(String contextIdentifier,
 											 String requestMethod,
-			                                 boolean sendingSomthingToServer)
+			                                 boolean sendingSomethingToServer)
 	{
 		HttpURLConnection result = null;
 		try {
 			URL url = new URL(URL_PREFIX + contextIdentifier);
 			result = (HttpURLConnection)url.openConnection();
 			result.setRequestMethod(requestMethod);
-			result.setDoOutput(sendingSomthingToServer);
-			sendToServerCommunicator(result, new User("Robby", "OG", "fjek3j4", "m", "dane", "dane", "dane", "dane"));
+			result.setDoOutput(sendingSomethingToServer);
+			sendToServerCommunicator(result, new User("yroc92", "pass1", "cory@mail.com", "Cory", "Cooper", "abc123", "m"));
 			result.connect();
 		} catch (MalformedURLException e) {
 			e.printStackTrace();

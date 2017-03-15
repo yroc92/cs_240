@@ -2,47 +2,66 @@ package server.commonClasses.DaoClasses;
 
 import server.Database;
 import server.commonClasses.modelClasses.Person;
+import server.commonClasses.modelClasses.User;
+import server.services.GetJson;
+
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
 
 /**
  * Created by Cory on 3/11/17.
  */
 public class PersonDAO {
-    public void addPerson(Person person) {
-
-    }
 
     private Database db;
 
-    public PersonDAO() {
-        // Get database SINGLETON
-        db = Database.getInstance();
-        createTable();  // Create table if not already there
+    public PersonDAO(Database db) {
+        this.db = db;
     }
 
-    public void createTable() {
-        StringBuilder sqlStatement = new StringBuilder();
-        sqlStatement.append("CREATE TABLE 'person' (")
-                .append("'firstName' TEXT NOT NULL,")
-                .append("'lastName' TEXT NOT NULL,")
-                .append("'token' TEXT NOT NULL,")
-                .append("'gender' TEXT NOT NULL,")
-                .append("'personID' TEXT,")
-                .append("'fatherID' TEXT,")
-                .append("'motherID' TEXT,")
-                .append("'spouseID' TEXT)");
+    public void addPerson(Person newPerson) {
+
         try {
-            db.executeSqlStatement(sqlStatement.toString());
-        } catch (Exception e) {}
+            String sqlStatement = "INSERT INTO person values (?, ?, ?, ?, ?, ?, ?, ?)";
+            PreparedStatement insert = this.db.prepare(sqlStatement);
+            insert.setString(1, newPerson.getFirstName());
+            insert.setString(2, newPerson.getLastName());
+            insert.setString(3, newPerson.getGender());
+            insert.setString(4, newPerson.getDescendant());
+            insert.setInt(5, newPerson.getPersonID());
+            insert.setInt(6, newPerson.getFather());
+            insert.setInt(7, newPerson.getMother());
+            insert.setInt(8, newPerson.getSpouse());
+
+            insert.execute();
+            db.commitSqlStatement(insert);
+        } catch (SQLException e) {
+            System.err.println("Could not add person");
+            e.printStackTrace();
+            db.rollback();
+        }
     }
 
-//    public void addPerson(Person newUser) {
-////        StringBuilder sqlStatement = new StringBuilder();
-//        String sqlSqlStatment = "INSERT INTO person values ('"
-//                + newUser.getUsername() + "', '" + newUser.getPassword()
-//                + "', '" + newUser.getEmail() + "', '" + newUser.getFirstName()
-//                + "', '" + newUser.getLastName() + "', '" + newUser.getToken()
-//                + "', '" + newUser.getGender() + "', '" + newUser.getPersonID()
-//                + ")";
-//        db.executeSqlStatement(sqlSqlStatment);
+    public void addPersonFromUser(User newUser) {
+        Person newPerson = new Person(newUser.getFirstName(), newUser.getLastName(), newUser.getPersonID(),
+                newUser.getGender(), newUser.getUsername());
+        addPerson(newPerson);
+    }
+
+    private Person finishCreatingPerson(Person p) {
+        //TODO: implement this
+        return p;
+    }
+
+//    public void updateFatherID(String personID, String fatherID) {
+//        String sqlStatement = "update Person set 'fatherID' ='" + fatherID + "' where personID = '" + personID + "'";
+//        try {
+//            Database.executeSqlStatement(sqlStatement);
+//        } catch (SQLException e) {
+//            System.out.println("Couldn't update fatherID");
+//            e.printStackTrace();
+//        }
 //    }
+    //TODO: updateMotherID
+    //TODO: updateSpouseID
 }

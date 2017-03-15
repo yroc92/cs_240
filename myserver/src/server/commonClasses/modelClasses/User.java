@@ -1,11 +1,5 @@
 package server.commonClasses.modelClasses;
 
-import com.google.gson.Gson;
-import com.google.gson.JsonObject;
-
-import java.io.InputStream;
-import java.io.InputStreamReader;
-
 /**
  * Created by Cory on 2/17/17.
  *
@@ -36,12 +30,12 @@ public class User {
     Gender can be male ("m") or female ("f")
      */
     private String gender;
-    private String personID;
+    private int personID;
 
     /*
     The constructor for a user requires all the fields of the User class as parameters.
      */
-    public User(String username, String password, String email, String firstName, String lastName, String token, String gender, String personID) {
+    public User(String username, String password, String email, String firstName, String lastName, String token, String gender) {
         this.username = username;
         this.password = password;
         this.email = email;
@@ -106,11 +100,11 @@ public class User {
         this.gender = gender;
     }
 
-    public String getPersonID() {
+    public int getPersonID() {
         return personID;
     }
 
-    public void setPersonID(String personID) {
+    public void setPersonID(int personID) {
         this.personID = personID;
     }
 }

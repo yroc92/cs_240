@@ -3,13 +3,14 @@ package server.commonClasses.resourceClasses;
 
 import com.google.gson.Gson;
 import com.sun.net.httpserver.HttpExchange;
-import server.commonClasses.DaoClasses.PersonDAO;
+import server.Database;
 import server.commonClasses.DaoClasses.UserDAO;
 import server.commonClasses.GsonEncodeDecoder;
 import server.commonClasses.modelClasses.Person;
 import server.commonClasses.modelClasses.User;
 import server.services.AuthService;
 
+import javax.xml.crypto.Data;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
@@ -21,12 +22,17 @@ import java.util.ArrayList;
  * Created by Cory on 3/10/17.
  */
 public class UserResource {
-    private UserDAO userDao = new UserDAO();
-    private AuthService auth = new AuthService();
-    private Gson gson = new Gson();
+    private AuthService auth;
+    private Gson gson;
+    private Database db;
+
+    public UserResource(Database db) {
+        AuthService auth = new AuthService();
+        gson = new Gson();
+        this.db = db;
+    }
 
     public void handle(HttpExchange exchange, String[] pathParts) throws IOException {
-
         // If they have an invalid number of path parts, send HTTP_NOT_FOUND
         if ( pathParts.length != 3 ) {
             exchange.sendResponseHeaders(HttpURLConnection.HTTP_NOT_FOUND, -1);
@@ -44,7 +50,6 @@ public class UserResource {
                 // 404 error
                 exchange.sendResponseHeaders(HttpURLConnection.HTTP_NOT_FOUND, -1);
                 return;
-
         }
 
     }
@@ -56,46 +61,22 @@ public class UserResource {
             InputStreamReader inputStreamReader = new InputStreamReader(exchange.getRequestBody());
             User newUser = gson.fromJson(inputStreamReader, User.class);
             inputStreamReader.close();
-            userDao.addUser(newUser); // Add user to database
-
-//            createGenerations(newUser); // Generate history of 4 generations
+            db.getUserDao().addUser(newUser);  // Add user to database
+            db.getPersonDAO().addPersonFromUser(newUser);   // Create the corresponding person profile
+//            db.getPersonDAO().addPerson());
+//            createGenerations(newUser, 4); // Generate history of 4 generations
             PrintWriter printWriter = new PrintWriter(exchange.getResponseBody());
             gson.toJson(newUser, printWriter); // Write response
             printWriter.close();
 
             exchange.sendResponseHeaders(HttpURLConnection.HTTP_OK, 0);
             return;
-
         } catch (SQLException e) {
-            exchange.sendResponseHeaders(HttpURLConnection.HTTP_CONFLICT, -1);
-            System.out.println("Failed to insert new user in DB");
-            e.printStackTrace();
-        } catch (IOException e) {
-            exchange.sendResponseHeaders(HttpURLConnection.HTTP_CONFLICT, -1);
-            System.out.println("Failed to register new user");
-            e.printStackTrace();
-        } catch (NullPointerException e) {
-            exchange.sendResponseHeaders(HttpURLConnection.HTTP_BAD_REQUEST, -1);
-            e.printStackTrace();
-        }
-        catch (Exception e) {
-            System.out.println("Some exception was found");
+            System.err.println("Trouble registering user");
             e.printStackTrace();
         }
     }
 
-    private void createGenerations(User newUser) {
-        // Add user as person to database
-        PersonDAO personDao = new PersonDAO();
-        //TODO Add parent ID's before you insert newUser into database
-        personDao.addPerson(new Person(newUser.getFirstName(), newUser.getLastName(), null, newUser.getGender()));
-        int generation = 1;
-    }
-
-    private ArrayList<String> createParents() {
-        ArrayList<String> parentIDs = new ArrayList<>();
-        return parentIDs;
-    }
 
     private void loginUser(HttpExchange exchange) {
         //TODO - register user, build response send response

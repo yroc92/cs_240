@@ -1,7 +1,6 @@
 package server;
 
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.InetSocketAddress;
 import java.net.URI;
@@ -9,7 +8,7 @@ import java.net.URI;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 import com.sun.net.httpserver.HttpServer;
-import server.commonClasses.DaoClasses.UserDAO;
+import server.commonClasses.resourceClasses.ClearResource;
 import server.commonClasses.resourceClasses.UserResource;
 
 public class ServerCommunicator {
@@ -17,11 +16,17 @@ public class ServerCommunicator {
 	public static final int SERVER_PORT_NUMBER = 8080;
 	private static final int MAX_WAITING_CONNECTIONS = 10;
 	private HttpServer server;
-	private UserResource userResource = new UserResource();
+	private UserResource userResource;
+	private ClearResource clearResource;
 
-	ServerCommunicator() {}
+	ServerCommunicator() {
+		userResource = new UserResource(new Database());
+		clearResource = new ClearResource(new Database());
+	}
 
 	private void run() {
+		Database.init();
+
 		setUpServer(SERVER_PORT_NUMBER, MAX_WAITING_CONNECTIONS);
 		setupContext();
 		server.start();
@@ -77,6 +82,7 @@ public class ServerCommunicator {
 					break;
 
 				case "clear":
+					clearResource.handle(exchange, pathParts);
 					break;
 
 				case  "fill":
