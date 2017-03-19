@@ -12,20 +12,18 @@ public class Event {
     /*
     Identification values for the event itself and the corresponding person.
      */
-    private String eventID;
-    private Person person;
-
+    private int eventID;
+//    private String descendant;
+    private int personID;
     /*
     Time and location of the event
      */
-    private int year;
     private Double latitude;
     private Double longitude;
     private String country;
     private String city;
-
-    
-
+//    private String eventType;
+    private int year;
     /*
     A brief EventType of the event.
      */
@@ -33,14 +31,14 @@ public class Event {
     /*
     User to which this person belongs.
      */
-    private User descendant;
+    private String descendant;
     /*
     Constructor that takes in all fields as a parameter to initialize an Event instance.
      */
-    public Event(String eventID, Person person, int year, Double latitude, Double longitude,
-                 String country, String city, String eventType, User descendant) {
+    public Event(int eventID, int personID, int year, Double latitude, Double longitude,
+                 String country, String city, String eventType, String descendant) {
         this.eventID = eventID;
-        this.person = person;
+        this.personID = personID;
         this.year = year;
         this.latitude = latitude;
         this.longitude = longitude;
@@ -51,18 +49,9 @@ public class Event {
 
     }
 
-    public static void parseEvent(GsonEncodeDecoder source)  {
-
-    }
-
-    public void setEventID(String eventID) {
-
-        this.eventID = eventID;
-    }
-
-    public void setperson(Person person) {
-        this.person = person;
-    }
+//    public static void parseEvent(GsonEncodeDecoder source)  {
+//
+//    }
 
     public void setYear(int year) {
         this.year = year;
@@ -86,19 +75,6 @@ public class Event {
 
     public void setEventType(String EventType) {
         this.eventType = EventType;
-    }
-
-    public void setDescendant(User descendant) {
-        this.descendant = descendant;
-    }
-
-    public String getEventID() {
-
-        return eventID;
-    }
-
-    public Person getperson() {
-        return person;
     }
 
     public int getYear() {
@@ -125,7 +101,28 @@ public class Event {
         return eventType;
     }
 
-    public User getDescendant() {
+    public int getPersonID() {
+        return personID;
+    }
+
+    public void setPersonID(int personID) {
+        this.personID = personID;
+    }
+
+    public int getEventID() {
+
+        return eventID;
+    }
+
+    public void setEventID(int eventID) {
+        this.eventID = eventID;
+    }
+
+    public String getDescendant() {
         return descendant;
+    }
+
+    public void setDescendant(String descendant) {
+        this.descendant = descendant;
     }
 }

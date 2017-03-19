@@ -10,10 +10,7 @@ public class AuthToken {
     The authentication token code that a user actually uses.
      */
     private String authToken;
-    /*
-    The username that this token is associated with.
-     */
-    private String username;
+
     /*
     The personID associated with the user
      */
@@ -22,9 +19,8 @@ public class AuthToken {
     /*
     Constructor requires all fields for initialization.
      */
-    public AuthToken(String authToken, String username, String personID) {
+    public AuthToken(String authToken, String personID) {
         this.authToken = authToken;
-        this.username = username;
         this.personID = personID;
     }
 
@@ -34,14 +30,6 @@ public class AuthToken {
 
     public void setAuthToken(String authToken) {
         this.authToken = authToken;
-    }
-
-    public String getUsername() {
-        return username;
-    }
-
-    public void setUsername(String username) {
-        this.username = username;
     }
 
     public String getPersonID() {

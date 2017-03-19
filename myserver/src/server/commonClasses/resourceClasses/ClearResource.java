@@ -3,6 +3,8 @@ package server.commonClasses.resourceClasses;
 import com.google.gson.Gson;
 import com.sun.net.httpserver.HttpExchange;
 import server.Database;
+import server.commonClasses.modelClasses.ResponseMessage;
+
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.net.HttpURLConnection;
@@ -13,6 +15,7 @@ import java.util.HashSet;
 
 /**
  * Created by Cory on 3/13/17.
+ * This is the handler for the 'clear endpoint'. Deals with clearing the entire database.
  */
 public class ClearResource {
 
@@ -34,7 +37,8 @@ public class ClearResource {
     private void clearDatabase(HttpExchange exchange) throws IOException {
         PrintWriter printWriter = new PrintWriter(exchange.getResponseBody());
         Gson gson = new Gson();
-        String[] clearStatments = {"DROP TABLE IF EXISTS 'user'", "DROP TABLE IF EXISTS 'person'", "DROP TABLE IF EXISTS 'event'"};
+        String[] clearStatments = {"DROP TABLE IF EXISTS 'user'", "DROP TABLE IF EXISTS 'person'",
+                "DROP TABLE IF EXISTS 'event'", "DROP TABLE IF EXISTS 'auth_token'"};
 
         try {
             for (String statement : clearStatments) {
@@ -42,12 +46,11 @@ public class ClearResource {
                 db.commitSqlStatement();
             }
             db.createAllTables();
-            gson.toJson("Clear Succeeded", printWriter); // Write response
+            gson.toJson(new ResponseMessage("Clear Succeeded"), printWriter); // Write response
             exchange.sendResponseHeaders(HttpURLConnection.HTTP_OK, 0);
         } catch (Exception e) {
-            System.out.println("Did not clear database.");
-            gson.toJson("Did not clear database: file not found");
-            exchange.sendResponseHeaders(HttpURLConnection.HTTP_BAD_METHOD,0);
+            gson.toJson(new ResponseMessage(e.getMessage()), printWriter); // Write response
+            exchange.sendResponseHeaders(HttpURLConnection.HTTP_CONFLICT,0);
         } finally {
             printWriter.close();
         }

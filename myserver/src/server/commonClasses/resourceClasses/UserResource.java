@@ -4,20 +4,18 @@ package server.commonClasses.resourceClasses;
 import com.google.gson.Gson;
 import com.sun.net.httpserver.HttpExchange;
 import server.Database;
-import server.commonClasses.DaoClasses.UserDAO;
-import server.commonClasses.GsonEncodeDecoder;
+import server.commonClasses.modelClasses.ResponseMessage;
 import server.commonClasses.modelClasses.Person;
 import server.commonClasses.modelClasses.User;
 import server.services.AuthService;
+import server.services.FamilyService;
 import server.services.IdGenerator;
 
-import javax.xml.crypto.Data;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.HttpURLConnection;
 import java.sql.SQLException;
-import java.util.ArrayList;
 
 /**
  * Created by Cory on 3/10/17.
@@ -56,25 +54,33 @@ public class UserResource {
     }
 
     private void registerUser(HttpExchange exchange) throws IOException {
-        //TODO - register user, build response send response
+        //TODO - register user
         //build response:
+        PrintWriter printWriter = new PrintWriter(exchange.getResponseBody());
         try {
             InputStreamReader inputStreamReader = new InputStreamReader(exchange.getRequestBody());
             User newUser = gson.fromJson(inputStreamReader, User.class);
-            newUser.setPersonID(IdGenerator.ID_GENERATOR.getNewId());   // Give user an Id
             inputStreamReader.close();
-            db.getUserDao().addUser(newUser);  // Add user to database
-            db.getPersonDAO().addPersonFromUser(newUser);   // Create the corresponding person profile
-//            createGenerations(newUser, 4); // Generate history of 4 generations
-            PrintWriter printWriter = new PrintWriter(exchange.getResponseBody());
-            gson.toJson(newUser, printWriter); // Write response
-            printWriter.close();
 
+            newUser.setPersonID(IdGenerator.ID_GENERATOR.getNewId());   // Give user an Id
+            db.getUserDao().addUser(newUser);  // Add user to database
+
+            Person thisPerson = db.getPersonDAO().convertUserToPerson(newUser);
+            // Use the family service to create 4 generations of family. Pass in a converted Person object
+            FamilyService.FAMILY_SERVICE.createGenerations(thisPerson, 4);
+            db.getPersonDAO().addPerson(thisPerson);
+
+            gson.toJson(newUser, printWriter); // Write response
             exchange.sendResponseHeaders(HttpURLConnection.HTTP_OK, 0);
             return;
         } catch (SQLException e) {
-            System.err.println("Trouble registering user");
-            e.printStackTrace();
+//            System.err.println("error message" +e.getMessage());
+//            e.printStackTrace();
+
+            gson.toJson(new ResponseMessage(e.getMessage()), printWriter); // Write response
+            exchange.sendResponseHeaders(HttpURLConnection.HTTP_CONFLICT, 0);
+        } finally {
+            printWriter.close();
         }
     }
 

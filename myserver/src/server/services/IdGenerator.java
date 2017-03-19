@@ -1,8 +1,6 @@
 package server.services;
 
 import server.Database;
-
-import java.io.*;
 import java.sql.SQLException;
 
 /**
@@ -12,20 +10,28 @@ import java.sql.SQLException;
  * Writes this value to a file so that on reset, the same Id isn't used again.
  */
 public enum IdGenerator {
+    // IdGenerator singleton
     ID_GENERATOR;
 
-    int id;
-
+    // id is a generated PersonID for the Person table.
+    private int id;
+    private Database db;
     /*
     The constructor starts the id at
      */
     IdGenerator() {
-        // Assign id to be the last Id used, unless this is a fresh run.
-        // In which case, let's start at 100.
-        if (getLastId() == 0){
-            id = 100;
-        } else {
-            id = getLastId();
+        // Assign id to be the highest Id in the database.
+        // If the highest is 0, then start our id counter at 100.
+        this.db = new Database();
+        try {
+            int maxPersonID = this.db.getMaxPersonID();
+            if (maxPersonID == 0){
+                id = 100;
+            } else {
+                this.id = maxPersonID;
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
     }
 
@@ -33,8 +39,8 @@ public enum IdGenerator {
     Increments the Id and returns it
      */
     public int getNewId() {
-        id++;
-        return id;
+        this.id++;
+        return this.id;
     }
 
     /*
@@ -42,7 +48,7 @@ public enum IdGenerator {
     is at upon a server restart.
      */
     private int getMaxId() throws SQLException {
-        return
+        return this.db.getMaxPersonID();
     }
 
 }

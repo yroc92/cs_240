@@ -1,9 +1,16 @@
 package server;
 
+import com.google.gson.Gson;
+import com.sun.net.httpserver.HttpExchange;
+import server.commonClasses.DaoClasses.EventDAO;
 import server.commonClasses.DaoClasses.PersonDAO;
 import server.commonClasses.DaoClasses.UserDAO;
 import server.commonClasses.modelClasses.Person;
+import server.commonClasses.modelClasses.ResponseMessage;
 
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.net.HttpURLConnection;
 import java.sql.*;
 
 /**
@@ -13,15 +20,19 @@ public class Database {
 
     public static Connection conn;
 
-
+    private Gson gson;
     private UserDAO userDao;
     private PersonDAO personDAO;
+    private EventDAO eventDAO;
     //TODO: add event dao for creating tables
 
     public Database() {
+        gson = new Gson();
         Database.init();
         userDao = new UserDAO(this);
         personDAO = new PersonDAO(this);
+        eventDAO = new EventDAO(this);
+
     }
 
     public static void init() {
@@ -64,20 +75,20 @@ public class Database {
      * @return The generated key (only the most recent), -1 otherwise
      * @throws SQLException
      */
-    public int getGeneratedKey() throws SQLException
-    {
-        PreparedStatement getGeneratedKeys = prepare("SELECT last_insert_rowid()");
-        ResultSet rs = getGeneratedKeys.executeQuery();
-        int key = -1;
-
-        if (rs.next())
-        {
-            key = rs.getInt(1);
-        }
-
-        getGeneratedKeys.close();	// Very important to do when we're done! Otherwise 'SQL logic error or missing database'
-        return key;
-    }
+//    public int getGeneratedKey() throws SQLException
+//    {
+//        PreparedStatement getGeneratedKeys = prepare("SELECT last_insert_rowid()");
+//        ResultSet rs = getGeneratedKeys.executeQuery();
+//        int key = -1;
+//
+//        if (rs.next())
+//        {
+//            key = rs.getInt(1);
+//        }
+//
+//        getGeneratedKeys.close();	// Very important to do when we're done! Otherwise 'SQL logic error or missing database'
+//        return key;
+//}
     public static void commitSqlStatement() throws SQLException {
         Database.conn.commit();
     }
@@ -122,6 +133,8 @@ public class Database {
         try {
             createUserTable();
             createPersonTable();
+            createEventTable();
+            createAuthTokenTable();
         } catch (Exception e) {
             System.err.println("Could not create all tables");
         }
@@ -134,6 +147,8 @@ public class Database {
     public PersonDAO getPersonDAO() {
         return personDAO;
     }
+
+    public EventDAO getEventDAO() { return eventDAO; }
 
      private static void createPersonTable() {
         StringBuilder sqlStatement = new StringBuilder();
@@ -149,6 +164,8 @@ public class Database {
         try {
             Database.conn.prepareStatement(sqlStatement.toString()).execute();
             commitSqlStatement();
+        } catch (SQLException e) {
+            System.out.println("Table Person already exists");
         } catch (Exception e) {
             System.err.println(e.getMessage());
         }
@@ -156,11 +173,39 @@ public class Database {
 
     private static void createUserTable() {
         String sql = "CREATE TABLE 'user' ('username' TEXT NOT NULL PRIMARY KEY, 'password' TEXT NOT NULL, " +
-                "'email' TEXT NOT NULL, 'firstName' TEXT NOT NULL, 'lastName' TEXT NOT NULL, 'token' TEXT NOT NULL," +
+                "'email' TEXT NOT NULL, 'firstName' TEXT NOT NULL, 'lastName' TEXT NOT NULL, 'token' TEXT," +
                 "'gender' TEXT NOT NULL, 'personID' INTEGER)";
         try {
             Database.conn.prepareStatement(sql).execute();
             commitSqlStatement();
+        } catch (SQLException e) {
+            System.out.println("Table user already exists");
+        } catch (Exception e) {
+            System.err.println(e.getMessage());
+        }
+    }
+
+    private static void createAuthTokenTable() {
+        String sql = "CREATE TABLE 'auth_token' ('username' TEXT NOT NULL, 'token' TEXT PRIMARY KEY)";
+        try {
+            Database.conn.prepareStatement(sql).execute();
+            commitSqlStatement();
+        } catch (SQLException e) {
+            System.out.println("Table auth_token already exists");
+        } catch (Exception e) {
+            System.err.println(e.getMessage());
+        }
+    }
+
+    private static void createEventTable() {
+        String sql = "CREATE TABLE 'event' ('eventID' INTEGER NOT NULL PRIMARY KEY, 'personID' TEXT NOT NULL, " +
+                "'year' INTEGER NOT NULL, 'latitude' REAL NOT NULL, 'longitude' REAL NOT NULL, 'country' TEXT NOT NULL, " +
+                "'city' TEXT NOT NULL, 'eventType' TEXT NOT NULL, 'descendant' TEXT NOT NULL)";
+        try {
+            Database.conn.prepareStatement(sql).execute();
+            commitSqlStatement();
+        } catch (SQLException e) {
+            System.out.println("Table auth_token already exists");
         } catch (Exception e) {
             System.err.println(e.getMessage());
         }
@@ -175,10 +220,22 @@ public class Database {
         ResultSet rs = getMax.executeQuery();
         int max = 0;
         if (rs.next()) {
-            max = rs.getInt(4);
+            max = rs.getInt(1);
         }
         getMax.close();
         return max;
+    }
+
+    /*
+    Helper function to send HTTP response objects to the client.
+     */
+    public void sendResponse(HttpExchange exchange, String bodyMessage, int responseHeader, int contentLength) throws IOException {
+        PrintWriter printWriter = new PrintWriter(exchange.getResponseBody());
+        if (bodyMessage != null) {
+            gson.toJson(new ResponseMessage("Invalid username parameter"), printWriter); // Write response
+        }
+        exchange.sendResponseHeaders(responseHeader, contentLength);
+        printWriter.close();
     }
 
 }

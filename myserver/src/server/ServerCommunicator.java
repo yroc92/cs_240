@@ -9,6 +9,8 @@ import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 import com.sun.net.httpserver.HttpServer;
 import server.commonClasses.resourceClasses.ClearResource;
+import server.commonClasses.resourceClasses.FillResource;
+import server.commonClasses.resourceClasses.LoadResource;
 import server.commonClasses.resourceClasses.UserResource;
 
 public class ServerCommunicator {
@@ -18,10 +20,14 @@ public class ServerCommunicator {
 	private HttpServer server;
 	private UserResource userResource;
 	private ClearResource clearResource;
+	private FillResource fillResource;
+	private LoadResource loadResource;
 
 	ServerCommunicator() {
 		userResource = new UserResource(new Database());
 		clearResource = new ClearResource(new Database());
+		fillResource = new FillResource(new Database());
+		loadResource = new LoadResource(new Database());
 	}
 
 	private void run() {
@@ -78,7 +84,7 @@ public class ServerCommunicator {
 			}
 			switch (pathParts[1]) {
 				case "user":
-					userResource.handle(exchange,pathParts);
+					userResource.handle(exchange, pathParts);
 					break;
 
 				case "clear":
@@ -86,9 +92,11 @@ public class ServerCommunicator {
 					break;
 
 				case  "fill":
+					fillResource.handle(exchange, pathParts);
 					break;
 
 				case "load":
+					loadResource.handle(exchange, pathParts);
 					break;
 
 				case "person":

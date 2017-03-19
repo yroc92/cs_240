@@ -1,5 +1,7 @@
 package server.commonClasses.modelClasses;
 
+import java.util.UUID;
+
 /**
  * Created by Cory on 2/17/17.
  *
@@ -30,7 +32,7 @@ public class User {
     Gender can be male ("m") or female ("f")
      */
     private String gender;
-    private int personID;
+    private String personID;
 
     /*
     The constructor for a user requires all the fields of the User class as parameters.
@@ -43,7 +45,7 @@ public class User {
         this.lastName = lastName;
         this.token = token;
         this.gender = gender;
-        this.personID = personID;
+        this.personID = UUID.randomUUID().toString();
     }
 
     public String getUsername() { return username; }
@@ -100,11 +102,11 @@ public class User {
         this.gender = gender;
     }
 
-    public int getPersonID() {
+    public String getPersonID() {
         return personID;
     }
 
-    public void setPersonID(int personID) {
+    public void setPersonID(String personID) {
         this.personID = personID;
     }
 }

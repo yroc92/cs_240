@@ -8,7 +8,6 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.util.ArrayList;
 import java.util.Random;
-
 /**
  * Created by Cory on 3/14/17.
  */
@@ -28,7 +27,7 @@ public enum GetJson  {
 
     private void init() {
         gson = new Gson();
-        String[] paths = {"json/fnames.json", "json/locations.json", "json/mnames.json", "json/snames.json"};
+        String[] paths = {"src/json/fnames.json", "src/json/locations.json", "src/json/mnames.json", "src/json/snames.json"};
         ArrayList<JsonElement> elements = new ArrayList<>();
         for (String path : paths) {
             try {
@@ -59,13 +58,13 @@ public enum GetJson  {
 
     public String getRandomFemaleName() {
         Random selector = new Random();
-        int n = selector.nextInt(fnames.size() -1);
+        int n = selector.nextInt(fnames.size() - 1);
         return fnames.get(n).getAsString();
     }
 
     public String getRandomSurname() {
         Random selector = new Random();
-        int n = selector.nextInt(snames.size() -1);
+        int n = selector.nextInt(snames.size() - 1);
         return snames.get(n).getAsString();
     }
 }

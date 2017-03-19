@@ -14,7 +14,7 @@ public class Person {
     /*
     Identification number of the person.
      */
-    private int personID;
+    private String personID;
     /*
     Gender of the person.
      */
@@ -23,9 +23,9 @@ public class Person {
     The following family relationships are all optional, and are initially null.
     The string refers to their unique identifiers.
      */
-    private int father;
-    private int mother;
-    private int spouse;
+    private String father;
+    private String mother;
+    private String spouse;
 
     // User to which this person belongs
     private String descendant;
@@ -33,15 +33,15 @@ public class Person {
     /*
     Constructor that takes in all fields as parameters other than the family relationships.
      */
-    public Person(String firstName, String lastName, int personID, String gender, String username) {
+    public Person(String firstName, String lastName, String personID, String gender, String username) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.personID = personID;
         this.gender = gender;
         this.descendant = username;
-        this.father = 0;
-        this.mother = 0;
-        this.spouse = 0;
+        this.father = "";
+        this.mother = "";
+        this.spouse = "";
     }
 
     public String getFirstName() {
@@ -60,11 +60,11 @@ public class Person {
         this.lastName = lastName;
     }
 
-    public int getPersonID() {
+    public String getPersonID() {
         return personID;
     }
 
-    public void setPersonID(int personID) {
+    public void setPersonID(String personID) {
         this.personID = personID;
     }
 
@@ -84,27 +84,27 @@ public class Person {
         this.descendant = descendant;
     }
 
-    public int getFather() {
+    public String getFather() {
         return father;
     }
 
-    public void setFather(int father) {
+    public void setFather(String father) {
         this.father = father;
     }
 
-    public int getMother() {
+    public String getMother() {
         return mother;
     }
 
-    public void setMother(int mother) {
+    public void setMother(String mother) {
         this.mother = mother;
     }
 
-    public int getSpouse() {
+    public String getSpouse() {
         return spouse;
     }
 
-    public void setSpouse(int spouse) {
+    public void setSpouse(String spouse) {
         this.spouse = spouse;
     }
 }
