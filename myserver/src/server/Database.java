@@ -2,15 +2,14 @@ package server;
 
 import com.google.gson.Gson;
 import com.sun.net.httpserver.HttpExchange;
+import org.sqlite.SQLiteConfig;
 import server.commonClasses.DaoClasses.EventDAO;
 import server.commonClasses.DaoClasses.PersonDAO;
 import server.commonClasses.DaoClasses.UserDAO;
-import server.commonClasses.modelClasses.Person;
 import server.commonClasses.modelClasses.ResponseMessage;
 
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.net.HttpURLConnection;
 import java.sql.*;
 
 /**
@@ -24,7 +23,6 @@ public class Database {
     private UserDAO userDao;
     private PersonDAO personDAO;
     private EventDAO eventDAO;
-    //TODO: add event dao for creating tables
 
     public Database() {
         gson = new Gson();
@@ -32,15 +30,11 @@ public class Database {
         userDao = new UserDAO(this);
         personDAO = new PersonDAO(this);
         eventDAO = new EventDAO(this);
-
     }
 
     public static void init() {
 
-        if (Database.conn != null) {
-            return;
-        }
-
+        if (Database.conn != null) { return; }
         try {
             final String driver = "org.sqlite.JDBC";
             Class.forName(driver);
@@ -53,13 +47,18 @@ public class Database {
         createAllTables();
     }
 
-
+    /**
+     * Initialize the connection for the database.
+     */
     private static void openConnection() {
         try {
             final String CONNECTION_URL = "jdbc:sqlite:familymap.sqlite";
 
+            SQLiteConfig config = new SQLiteConfig();
+
+            config.setReadOnly(false);
             // Open a database connection
-            conn = DriverManager.getConnection(CONNECTION_URL);
+            conn = DriverManager.getConnection(CONNECTION_URL, config.toProperties());
 
             // Start a transaction
             conn.setAutoCommit(false);
@@ -70,34 +69,23 @@ public class Database {
         }
     }
 
-    /**
-     * Gets the last inserted value.
-     * @return The generated key (only the most recent), -1 otherwise
-     * @throws SQLException
-     */
-//    public int getGeneratedKey() throws SQLException
-//    {
-//        PreparedStatement getGeneratedKeys = prepare("SELECT last_insert_rowid()");
-//        ResultSet rs = getGeneratedKeys.executeQuery();
-//        int key = -1;
-//
-//        if (rs.next())
-//        {
-//            key = rs.getInt(1);
-//        }
-//
-//        getGeneratedKeys.close();	// Very important to do when we're done! Otherwise 'SQL logic error or missing database'
-//        return key;
-//}
     public static void commitSqlStatement() throws SQLException {
         Database.conn.commit();
     }
 
+    /**
+     * Commit a prepared statement by closing it.
+     * @param statement
+     * @throws SQLException
+     */
     public void commitSqlStatement(Statement statement) throws SQLException {
         statement.close();
         Database.conn.commit();
     }
 
+    /**
+     * Preserve the database in the event of an error being thrown.
+     */
     public void rollback() {
         try {
             Database.conn.rollback();
@@ -107,6 +95,11 @@ public class Database {
         }
     }
 
+    /**
+     * Ready a prepared statement.
+     * @param sql
+     * @return
+     */
     public PreparedStatement prepare(String sql) {
         try {
             return Database.conn.prepareStatement(sql, ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_READ_ONLY);
@@ -116,19 +109,10 @@ public class Database {
         return null;
     }
 
-//    public void addPerson() {}
-//    public void addEvent() {}
-//    public void authToken() {}
 
-
-
-//    public void executeSqlStatement(String statement) throws SQLException {
-//        Statement stmt = conn.createStatement();
-//        commitSqlStatement(stmt);
-//
-//    }
-    //TODO Make Id generator
-
+    /**
+     * Creates all the database tables. Happens at initialization.
+     */
     public static void createAllTables() {
         try {
             createUserTable();
@@ -140,9 +124,7 @@ public class Database {
         }
     }
 
-    public UserDAO getUserDao() {
-        return userDao;
-    }
+    public UserDAO getUserDao() { return userDao; }
 
     public PersonDAO getPersonDAO() {
         return personDAO;
@@ -150,17 +132,20 @@ public class Database {
 
     public EventDAO getEventDAO() { return eventDAO; }
 
-     private static void createPersonTable() {
+    /**
+     * Create the person table in the database.
+     */
+    private static void createPersonTable() {
         StringBuilder sqlStatement = new StringBuilder();
-        sqlStatement.append("CREATE TABLE 'person' (")
+        sqlStatement.append("CREATE TABLE IF NOT EXISTS 'person' (")
                 .append("'firstName' TEXT NOT NULL, ")
                 .append("'lastName' TEXT NOT NULL, ")
                 .append("'gender' TEXT NOT NULL, ")
                 .append("'descendant' TEXT NOT NULL, ")
-                .append("'personID' INTEGER, ")
-                .append("'fatherID' INTEGER, ")
-                .append("'motherID' INTEGER, ")
-                .append("'spouseID' INTEGER)");
+                .append("'personID' TEXT NOT NULL, ")
+                .append("'fatherID' TEXT, ")
+                .append("'motherID' TEXT, ")
+                .append("'spouseID' TEXT)");
         try {
             Database.conn.prepareStatement(sqlStatement.toString()).execute();
             commitSqlStatement();
@@ -171,10 +156,13 @@ public class Database {
         }
     }
 
+    /**
+     * Create the user table in the database.
+     */
     private static void createUserTable() {
-        String sql = "CREATE TABLE 'user' ('username' TEXT NOT NULL PRIMARY KEY, 'password' TEXT NOT NULL, " +
-                "'email' TEXT NOT NULL, 'firstName' TEXT NOT NULL, 'lastName' TEXT NOT NULL, 'token' TEXT," +
-                "'gender' TEXT NOT NULL, 'personID' INTEGER)";
+        String sql = "CREATE TABLE IF NOT EXISTS 'user' ('userName' TEXT NOT NULL PRIMARY KEY, 'password' TEXT NOT NULL, " +
+                "'email' TEXT NOT NULL, 'firstName' TEXT NOT NULL, 'lastName' TEXT NOT NULL, 'token' TEXT NOT NULL, " +
+                "'gender' TEXT NOT NULL, 'personID' TEXT NOT NULL)";
         try {
             Database.conn.prepareStatement(sql).execute();
             commitSqlStatement();
@@ -185,8 +173,12 @@ public class Database {
         }
     }
 
+    /**
+     * Create the auth token table in the database.
+     */
     private static void createAuthTokenTable() {
-        String sql = "CREATE TABLE 'auth_token' ('username' TEXT NOT NULL, 'token' TEXT PRIMARY KEY)";
+        String sql = "CREATE TABLE IF NOT EXISTS 'auth_token' ('token' TEXT PRIMARY KEY, " +
+                "'personID' TEXT NOT NULL, 'userName' TEXT NOT NULL, 'creationDate' INTEGER NOT NULL)";
         try {
             Database.conn.prepareStatement(sql).execute();
             commitSqlStatement();
@@ -197,8 +189,11 @@ public class Database {
         }
     }
 
+    /**
+     * Create the event table in the database.
+     */
     private static void createEventTable() {
-        String sql = "CREATE TABLE 'event' ('eventID' INTEGER NOT NULL PRIMARY KEY, 'personID' TEXT NOT NULL, " +
+        String sql = "CREATE TABLE IF NOT EXISTS 'event' ('eventID' TEXT NOT NULL PRIMARY KEY, 'personID' TEXT NOT NULL, " +
                 "'year' INTEGER NOT NULL, 'latitude' REAL NOT NULL, 'longitude' REAL NOT NULL, 'country' TEXT NOT NULL, " +
                 "'city' TEXT NOT NULL, 'eventType' TEXT NOT NULL, 'descendant' TEXT NOT NULL)";
         try {
@@ -211,31 +206,26 @@ public class Database {
         }
     }
 
-    /*
-    Checks the Person table in the database for the highest personID value and returns it.
-     */
-    public int getMaxPersonID() throws SQLException {
-        String sqlStatement = "SELECT MAX(personID) FROM person";
-        PreparedStatement getMax = prepare(sqlStatement);
-        ResultSet rs = getMax.executeQuery();
-        int max = 0;
-        if (rs.next()) {
-            max = rs.getInt(1);
-        }
-        getMax.close();
-        return max;
-    }
-
-    /*
-    Helper function to send HTTP response objects to the client.
+    /**
+     * Helper function to send HTTP response strings to the client.
      */
     public void sendResponse(HttpExchange exchange, String bodyMessage, int responseHeader, int contentLength) throws IOException {
         PrintWriter printWriter = new PrintWriter(exchange.getResponseBody());
-        if (bodyMessage != null) {
-            gson.toJson(new ResponseMessage("Invalid username parameter"), printWriter); // Write response
+        gson.toJson(new ResponseMessage(bodyMessage), printWriter); // Write response body with provided string.
+        exchange.sendResponseHeaders(responseHeader, contentLength);
+        printWriter.close();
+    }
+     /**
+     * Helper function to send HTTP response objects to the client.
+     */
+    public void sendResponse(HttpExchange exchange, Object object, int responseHeader, int contentLength) throws IOException {
+        PrintWriter printWriter = new PrintWriter(exchange.getResponseBody());
+        if (object != null) {
+            gson.toJson(object, printWriter); // Write response
         }
         exchange.sendResponseHeaders(responseHeader, contentLength);
         printWriter.close();
     }
+
 
 }

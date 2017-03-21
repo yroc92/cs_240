@@ -30,18 +30,46 @@ public class Person {
     // User to which this person belongs
     private String descendant;
 
-    /*
-    Constructor that takes in all fields as parameters other than the family relationships.
+    /**
+     * Constructor for person with only the necessary fields.
+     * @param firstName
+     * @param lastName
+     * @param personID
+     * @param gender
+     * @param userName
      */
-    public Person(String firstName, String lastName, String personID, String gender, String username) {
+    public Person(String firstName, String lastName, String personID, String gender, String userName) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.personID = personID;
         this.gender = gender;
-        this.descendant = username;
+        this.descendant = userName;
         this.father = "";
         this.mother = "";
         this.spouse = "";
+    }
+
+    /**
+     * Constructor to create a person with all fields.
+     * @param firstName
+     * @param lastName
+     * @param personID
+     * @param gender
+     * @param userName
+     * @param father
+     * @param mother
+     * @param spouse
+     */
+    public Person(String firstName, String lastName, String personID, String gender, String userName,
+                  String father, String mother, String spouse) {
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.personID = personID;
+        this.gender = gender;
+        this.descendant = userName;
+        this.father = father;
+        this.mother = mother;
+        this.spouse = spouse;
     }
 
     public String getFirstName() {

@@ -45,7 +45,7 @@ public class ClientCommunicator {
 			result = (HttpURLConnection)url.openConnection();
 			result.setRequestMethod(requestMethod);
 			result.setDoOutput(sendingSomethingToServer);
-			sendToServerCommunicator(result, new User("yroc92", "pass1", "cory@mail.com", "Cory", "Cooper", "abc123", "m"));
+//			sendToServerCommunicator(result, new User("yroc92", "pass1", "cory@mail.com", "Cory", "Cooper", "abc123", "m"));
 			result.connect();
 		} catch (MalformedURLException e) {
 			e.printStackTrace();
@@ -109,7 +109,7 @@ public class ClientCommunicator {
 
 //Auxiliary Constants, Attributes, and Methods
 	private static final String SERVER_HOST = "localhost";
-	private static final String URL_PREFIX = "http://" + SERVER_HOST + ":" + ServerSingleton.SERVER_PORT_NUMBER + "/user/register" ;
+	private static final String URL_PREFIX = "http://" + SERVER_HOST + ":" + ServerCommunicator.SERVER_PORT_NUMBER + "/user/register" ;
 	private static final String HTTP_POST = "POST";
 	private static final String COMMAND_HANDLER_DESIGNATOR = "/";
 }

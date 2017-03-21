@@ -3,9 +3,7 @@ package server.commonClasses.resourceClasses;
 import com.google.gson.Gson;
 import com.sun.net.httpserver.HttpExchange;
 import server.Database;
-import server.commonClasses.modelClasses.Event;
-import server.commonClasses.modelClasses.Person;
-import server.commonClasses.modelClasses.User;
+import server.commonClasses.modelClasses.LoadObject;
 
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -42,11 +40,11 @@ public class LoadResource {
 
     }
 
-
     /**
      * Clears the database.
+     *
      * @param exchange: the HTTP exchange.
-     * return boolean: true if succeeded, false if failed.
+     *                  return boolean: true if succeeded, false if failed.
      */
     private boolean clearDatabase(HttpExchange exchange) throws IOException {
         String[] clearStatments = {"DROP TABLE IF EXISTS 'user'", "DROP TABLE IF EXISTS 'person'",
@@ -54,9 +52,9 @@ public class LoadResource {
         try {
             for (String statement : clearStatments) {
                 Database.conn.prepareStatement(statement).execute();
-                db.commitSqlStatement();
+                Database.commitSqlStatement();
             }
-            db.createAllTables();
+            Database.createAllTables();
 
         } catch (Exception e) {
             db.sendResponse(exchange, e.getMessage(), HttpURLConnection.HTTP_CONFLICT, 0);
@@ -67,21 +65,24 @@ public class LoadResource {
 
     /**
      * Sorts through the JSON response to add all the new content.
+     *
      * @param exchange: the HTTP exchange.
      */
     private void loadDatabase(HttpExchange exchange) throws IOException {
         try {
             InputStreamReader inputStreamReader = new InputStreamReader(exchange.getRequestBody());
-            User[] usersArray = gson.fromJson(inputStreamReader, User[].class);
-            Person[] personsArray = gson.fromJson(inputStreamReader, Person[].class);
-            Event[] eventsArray = gson.fromJson(inputStreamReader, Event[].class);
+            LoadObject loadObject = gson.fromJson(inputStreamReader, LoadObject.class);
+
             inputStreamReader.close();
             // Add the arrays of the objects to the database
-            db.getUserDao().addArrayOfUsers(usersArray);
-            db.getPersonDAO().addArrayOfPersons(personsArray);
-            db.getEventDAO().addArrayOfEvents(eventsArray);
-            String responseMessage = "Successfully added " + usersArray.length + " users, " + personsArray.length +
-                    " persons, and " + eventsArray.length + " events to the database.";
+            db.getUserDao().addArrayOfUsers(loadObject.getUsers());
+            db.getPersonDAO().addArrayOfPersons(loadObject.getPersons());
+            db.getEventDAO().addArrayOfEvents(loadObject.getEvents());
+
+            String responseMessage = "Successfully added " +
+                    loadObject.getUsers().size() + " users, " +
+                    loadObject.getPersons().size() + " persons, and " +
+                    loadObject.getEvents().size() + " events to the database.";
             db.sendResponse(exchange, responseMessage, HttpURLConnection.HTTP_ACCEPTED, 0);
         } catch (IOException e) {
             db.sendResponse(exchange, e.getMessage(), HttpURLConnection.HTTP_INTERNAL_ERROR, 0);

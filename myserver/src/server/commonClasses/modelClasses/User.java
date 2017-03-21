@@ -9,10 +9,10 @@ import java.util.UUID;
  * This is required information for authentication.
  */
 public class User {
-    /*
-        Username and password authentication
-         */
-    private String username;
+    /**
+     * Username and password authentication
+     */
+    private String userName;
     private String password;
     /*
     Email associated with the user
@@ -37,21 +37,36 @@ public class User {
     /*
     The constructor for a user requires all the fields of the User class as parameters.
      */
-    public User(String username, String password, String email, String firstName, String lastName, String token, String gender) {
-        this.username = username;
+    public User(String userName, String password, String email, String firstName, String lastName, String gender) {
+        this.userName = userName;
         this.password = password;
         this.email = email;
         this.firstName = firstName;
         this.lastName = lastName;
-        this.token = token;
+        this.token = UUID.randomUUID().toString();
         this.gender = gender;
         this.personID = UUID.randomUUID().toString();
     }
 
-    public String getUsername() { return username; }
+    /**
+     * The constructor for a user requires all the fields of the User class as parameters.
+     */
+    public User(String userName, String password, String email, String firstName, String lastName, String gender,
+                String token, String personID) {
+        this.userName = userName;
+        this.password = password;
+        this.email = email;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.gender = gender;
+        this.token = token;
+        this.personID = personID;
+    }
 
-    public void setUsername(String username) {
-        this.username = username;
+    public String getUsername() { return userName; }
+
+    public void setUsername(String userName) {
+        this.userName = userName;
     }
 
     public String getPassword() {

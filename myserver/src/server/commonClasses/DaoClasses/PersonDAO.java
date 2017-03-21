@@ -4,10 +4,11 @@ import server.Database;
 import server.commonClasses.modelClasses.Person;
 import server.commonClasses.modelClasses.User;
 import server.services.GetJson;
-import server.services.IdGenerator;
 
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.UUID;
 
 /**
@@ -21,6 +22,10 @@ public class PersonDAO {
         this.db = db;
     }
 
+    /**
+     * Adds a person object to the database.
+     * @param newPerson The new person to be added to the database.
+     */
     public void addPerson(Person newPerson) {
 
         try {
@@ -35,7 +40,7 @@ public class PersonDAO {
             insert.setString(7, newPerson.getMother());
             insert.setString(8, newPerson.getSpouse());
 
-            insert.execute();
+            insert.executeUpdate();
             db.commitSqlStatement(insert);
         } catch (SQLException e) {
             System.err.println("Could not add person");
@@ -44,13 +49,63 @@ public class PersonDAO {
         }
     }
 
-    // Create a Person object out of a User object
+    /**
+     * Retrieves a person object from the database given their personID
+     * @param personID
+     * @return The found person object.
+     * @throws SQLException
+     */
+    public Person getPersonByPersonID(String personID) throws SQLException {
+        String findPersonSql = "SELECT * FROM person WHERE personID = ?";
+        PreparedStatement findPersonStmt = null;
+        ResultSet findPersonResults;
+        // Search the database for qualifying person.
+        try {
+            findPersonStmt = db.prepare(findPersonSql);
+            findPersonStmt.setString(1, personID);
+            findPersonResults = findPersonStmt.executeQuery();
+
+            // Return the result set object if it is valid.
+            if (findPersonResults.next()) {
+                Person foundPerson = new Person(findPersonResults.getString("firstName"),
+                        findPersonResults.getString("lastName"),
+                        findPersonResults.getString("personID"),
+                        findPersonResults.getString("gender"),
+                        findPersonResults.getString("descendant"),
+                        findPersonResults.getString("fatherID"),
+                        findPersonResults.getString("motherID"),
+                        findPersonResults.getString("spouseID"));
+                return foundPerson;
+            } else {
+                return null;
+            }
+        } catch (SQLException e) {
+            System.err.println("Failed to find person, " + e.getMessage());
+            e.printStackTrace();
+        } finally {
+            if (findPersonStmt != null) {
+                findPersonStmt.close();
+            }
+        }
+        return null;
+    }
+
+    /**
+     * Create a Person object out of a User object
+     * @param newUser User object to be converted.
+     * @return a new-found person object.
+     */
     public Person convertUserToPerson(User newUser) {
         return new Person(newUser.getFirstName(), newUser.getLastName(), newUser.getPersonID(),
                 newUser.getGender(), newUser.getUsername());
     }
 
-    // Using the given JSON data, create a randomly generated Person object
+    /**
+     * Using the given JSON data, create a randomly generated Person object.
+     * @param gender The determined gender of this new person.
+     * @param descendant The originator of this person.
+     * @return A newly created person.
+     */
     public Person generatePerson(String gender, String descendant) {
         String firstname;
         if (gender == "m") {
@@ -62,28 +117,14 @@ public class PersonDAO {
                 UUID.randomUUID().toString(), gender, descendant);
     }
 
-    private Person finishCreatingPerson(Person p) {
-        //TODO: implement this
-        return p;
-    }
-
-    public void addArrayOfPersons(Person[] personsArray) throws SQLException {
+    /**
+     * Simply iterates over an array of persons and adds them all to the database.
+     * @param personsArray an array of person objects.
+     * @throws SQLException in case there's an error with adding to the database.
+     */
+    public void addArrayOfPersons(ArrayList<Person> personsArray) throws SQLException {
         for (Person person : personsArray) {
-            Person newPerson = new Person(person.getFirstName(), person.getLastName(), person.getPersonID(),
-                    person.getGender(), person.getDescendant());
-            addPerson(newPerson);
+            addPerson(person);
         }
     }
-
-//    public void updateFatherID(String personID, String fatherID) {
-//        String sqlStatement = "update Person set 'fatherID' ='" + fatherID + "' where personID = '" + personID + "'";
-//        try {
-//            Database.executeSqlStatement(sqlStatement);
-//        } catch (SQLException e) {
-//            System.out.println("Couldn't update fatherID");
-//            e.printStackTrace();
-//        }
-//    }
-    //TODO: updateMotherID
-    //TODO: updateSpouseID
 }

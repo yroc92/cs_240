@@ -1,7 +1,5 @@
 package server.commonClasses.modelClasses;
 
-import server.commonClasses.GsonEncodeDecoder;
-
 
 /**
  * Created by Cory on 2/17/17.
@@ -12,9 +10,9 @@ public class Event {
     /*
     Identification values for the event itself and the corresponding person.
      */
-    private int eventID;
+    private String eventID;
 //    private String descendant;
-    private int personID;
+    private String personID;
     /*
     Time and location of the event
      */
@@ -35,7 +33,7 @@ public class Event {
     /*
     Constructor that takes in all fields as a parameter to initialize an Event instance.
      */
-    public Event(int eventID, int personID, int year, Double latitude, Double longitude,
+    public Event(String eventID, String personID, int year, Double latitude, Double longitude,
                  String country, String city, String eventType, String descendant) {
         this.eventID = eventID;
         this.personID = personID;
@@ -48,10 +46,6 @@ public class Event {
         this.descendant = descendant;
 
     }
-
-//    public static void parseEvent(GsonEncodeDecoder source)  {
-//
-//    }
 
     public void setYear(int year) {
         this.year = year;
@@ -101,21 +95,20 @@ public class Event {
         return eventType;
     }
 
-    public int getPersonID() {
-        return personID;
-    }
-
-    public void setPersonID(int personID) {
-        this.personID = personID;
-    }
-
-    public int getEventID() {
-
+    public String getEventID() {
         return eventID;
     }
 
-    public void setEventID(int eventID) {
+    public void setEventID(String eventID) {
         this.eventID = eventID;
+    }
+
+    public String getPersonID() {
+        return personID;
+    }
+
+    public void setPersonID(String personID) {
+        this.personID = personID;
     }
 
     public String getDescendant() {

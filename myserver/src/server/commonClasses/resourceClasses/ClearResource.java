@@ -8,10 +8,6 @@ import server.commonClasses.modelClasses.ResponseMessage;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.net.HttpURLConnection;
-import java.sql.Statement;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashSet;
 
 /**
  * Created by Cory on 3/13/17.
@@ -43,9 +39,9 @@ public class ClearResource {
         try {
             for (String statement : clearStatments) {
                 Database.conn.prepareStatement(statement).execute();
-                db.commitSqlStatement();
+                Database.commitSqlStatement();
             }
-            db.createAllTables();
+            Database.createAllTables();
             gson.toJson(new ResponseMessage("Clear Succeeded"), printWriter); // Write response
             exchange.sendResponseHeaders(HttpURLConnection.HTTP_OK, 0);
         } catch (Exception e) {

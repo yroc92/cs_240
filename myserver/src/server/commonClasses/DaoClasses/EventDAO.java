@@ -1,10 +1,16 @@
 package server.commonClasses.DaoClasses;
 
+import com.google.gson.JsonObject;
 import server.Database;
 import server.commonClasses.modelClasses.Event;
+import server.commonClasses.modelClasses.Person;
+import server.services.GetJson;
 
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.UUID;
 
 /**
  * Created by Cory on 3/19/17.
@@ -21,8 +27,8 @@ public class EventDAO {
         try {
             String sqlStatement = "INSERT INTO event values (?, ?, ?, ?, ?, ?, ?, ?, ?)";
             PreparedStatement insert = this.db.prepare(sqlStatement);
-            insert.setInt(1, newEvent.getEventID());
-            insert.setInt(2, newEvent.getPersonID());
+            insert.setString(1, newEvent.getEventID());
+            insert.setString(2, newEvent.getPersonID());
             insert.setInt(3, newEvent.getYear());
             insert.setDouble(4, newEvent.getLatitude());
             insert.setDouble(5, newEvent.getLongitude());
@@ -40,12 +46,80 @@ public class EventDAO {
         }
     }
 
-    public void addArrayOfEvents(Event[] events) throws SQLException {
+    public void addArrayOfEvents(ArrayList<Event> events) throws SQLException {
         for (Event event : events) {
-            Event newEvent = new Event(event.getEventID(), event.getPersonID(), event.getYear(),
-                    event.getLatitude(), event.getLongitude(), event.getCountry(), event.getCity(),
-                    event.getEventType(), event.getDescendant());
-            addEvent(newEvent);
+            addEvent(event);
         }
+    }
+
+    public ArrayList<Event> generateEvents(Person person, Person spouse) {
+        ArrayList<Event> events = new ArrayList<>();
+        String[] eventTypes = {"birth", "baptism", "marriage", "death"};
+        // Create a birth year. We'll make succeed events occur after this time.
+        int birthYear = (int)(Math.random() * 405 + 1600);
+        // The marriage location will be shared with the spouse.
+        JsonObject marriageLocation = GetJson.GET_JSON_SINGLETON.getRandomLocation();
+
+        for (int i = 0; i < eventTypes.length; i++) {
+            JsonObject location = GetJson.GET_JSON_SINGLETON.getRandomLocation();
+            if (i == 2) location = marriageLocation;
+            events.add(new Event(UUID.randomUUID().toString(), person.getPersonID(), birthYear + (11 * i),
+                    location.get("latitude").getAsDouble(), location.get("longitude").getAsDouble(),
+                    location.get("country").getAsString(), location.get("city").getAsString(), eventTypes[i],
+                    person.getDescendant()));
+        }
+
+        // If no spouse is provided, we're finished.
+        if (spouse == null) {
+            return events;
+        }
+
+        // Do the same algorithm for the spouse.
+        for (int i = 0; i < eventTypes.length; i++) {
+            JsonObject location = GetJson.GET_JSON_SINGLETON.getRandomLocation();
+            if (i == 2) location = marriageLocation;
+            events.add(new Event(UUID.randomUUID().toString(), spouse.getPersonID(), birthYear + (11 * i),
+                    location.get("latitude").getAsDouble(), location.get("longitude").getAsDouble(),
+                    location.get("country").getAsString(), location.get("city").getAsString(), eventTypes[i],
+                    spouse.getDescendant()));
+        }
+
+        return events;
+    }
+
+    public Event getEventByEventID(String eventID) throws SQLException {
+        String findEventSql = "SELECT * FROM event WHERE eventID = ?";
+        PreparedStatement findEventStmt = null;
+        ResultSet findEventResults;
+        // Search the database for qualifying person.
+        try {
+            findEventStmt = db.prepare(findEventSql);
+            findEventStmt.setString(1, eventID);
+            findEventResults = findEventStmt.executeQuery();
+
+            // Return the result set object if it is valid.
+            if (findEventResults.next()) {
+                Event foundEvent = new Event(findEventResults.getString("eventID"),
+                        findEventResults.getString("personID"),
+                        findEventResults.getInt("year"),
+                        findEventResults.getDouble("latitude"),
+                        findEventResults.getDouble("longitude"),
+                        findEventResults.getString("country"),
+                        findEventResults.getString("city"),
+                        findEventResults.getString("eventType"),
+                        findEventResults.getString("descendant"));
+                return foundEvent;
+            } else {
+                return null;
+            }
+        } catch (SQLException e) {
+            System.err.println("Failed to find event, " + e.getMessage());
+            e.printStackTrace();
+        } finally {
+            if (findEventStmt != null) {
+                findEventStmt.close();
+            }
+        }
+        return null;
     }
 }

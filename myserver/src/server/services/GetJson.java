@@ -67,4 +67,5 @@ public enum GetJson  {
         int n = selector.nextInt(snames.size() - 1);
         return snames.get(n).getAsString();
     }
+
 }

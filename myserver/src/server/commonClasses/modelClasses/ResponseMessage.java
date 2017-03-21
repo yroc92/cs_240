@@ -2,6 +2,7 @@ package server.commonClasses.modelClasses;
 
 /**
  * Created by Cory on 3/15/17.
+ * Used for formatting messages in response bodies.
  */
 public class ResponseMessage {
     private String message;

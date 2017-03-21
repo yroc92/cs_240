@@ -3,12 +3,12 @@ package server.commonClasses.resourceClasses;
 import com.google.gson.Gson;
 import com.sun.net.httpserver.HttpExchange;
 import server.Database;
-import server.commonClasses.modelClasses.ResponseMessage;
+import server.commonClasses.modelClasses.Person;
+import server.commonClasses.modelClasses.User;
 import server.services.FamilyService;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.PrintWriter;
 import java.net.HttpURLConnection;
+import java.sql.SQLException;
 
 
 /**
@@ -30,68 +30,54 @@ public class FillResource {
             return;
         }
         // Does the user already exist in the database?
-        String username = pathParts[2];
-        // If username is in the database, go on with the fill handler function.
-        if (db.getUserDao().getUserByUserName(username) != null) {
-            // Check if the generations path part exists
-            if (pathParts.length == 3) {
-                // Use the fill handler without the generations path
-                fill(exchange, username, 0);
-                return;
-            }
+        String userName = pathParts[2];
+        try {
+            if (pathParts.length == 3) fill(exchange, db.getUserDao().getUserByUserName(userName), 4);
             if (pathParts.length == 4) {
-                if (Integer.parseInt(pathParts[3]) >= 0) {
-                    // Use the fill handler with generations path included.
-                    fill(exchange, username, Integer.parseInt(pathParts[3]));
+                if (Integer.parseInt(pathParts[3]) < 0) {
+                    db.sendResponse(exchange, "Can't have negative generations.",
+                            HttpURLConnection.HTTP_BAD_REQUEST, 0);
                     return;
                 } else {
-                    db.sendResponse(exchange, "Can't have negative generations.", HttpURLConnection.HTTP_BAD_REQUEST, 0);
-                    return;
+                    fill(exchange, db.getUserDao().getUserByUserName(userName), Integer.parseInt(pathParts[3]));
                 }
             }
-        } else {
-            // For when the user doesn't exist in the database.
-            db.sendResponse(exchange, "Username " + username + " does not exist.", HttpURLConnection.HTTP_NOT_FOUND, 0);
-            return;
+        } catch (SQLException e) {
+            db.sendResponse(exchange, e.getMessage(), HttpURLConnection.HTTP_INTERNAL_ERROR, 0);
+            e.printStackTrace();
         }
     }
 
 
-    private void fill(HttpExchange exchange, String username, int generations) {
-        FamilyService.FAMILY_SERVICE.removeRelatives(username);
+    private void fill(HttpExchange exchange, User user, int generations) throws IOException {
+        // Does the
         try {
-            InputStreamReader inputStreamReader = new InputStreamReader(exchange.getRequestBody());
-    //        User newUser = gson.fromJson(inputStreamReader, User.class);
-            System.out.println(inputStreamReader.toString());
-            inputStreamReader.close();
-            //TODO: incorporate generations function
-//            FamilyService.FAMILY_SERVICE.createGenerations(generations);
-        } catch (IOException e) {
-            System.err.println(e.getMessage());
+            // Delete the associated information of the user.
+            if (user != null) FamilyService.FAMILY_SERVICE.removeRelatives(user.getUsername());
+            // Send the response if the user is not in the database.
+            else {
+                db.sendResponse(exchange, "User must exist in the database.", HttpURLConnection.HTTP_NOT_FOUND, 0);
+                return;
+            }
+            // Create a fresh person object out of the user
+            Person newPerson = db.getPersonDAO().convertUserToPerson(user);
+            // Add this new person to the database
+            db.getPersonDAO().addPerson(newPerson);
+            db.getEventDAO().generateEvents(newPerson, null);
+            // Create the indicated number of generations.
+            FamilyService.FAMILY_SERVICE.createGenerations(newPerson, generations);
+            // Send the response
+            String responseMessage = "Successfully added " +
+                    (int) (Math.pow(2, generations + 1) - 1)  + " persons and " +
+                    4 * (int) (Math.pow(2, generations + 1) - 1) + " events to the database.";
+            db.sendResponse(exchange, responseMessage, HttpURLConnection.HTTP_OK, 0);
+            return;
+        } catch (SQLException e) {
+            db.sendResponse(exchange, e.getMessage(), HttpURLConnection.HTTP_INTERNAL_ERROR, 0);
             e.printStackTrace();
         }
 
     }
 
-    private void fill(HttpExchange exchange, String[] pathParts) throws IOException {
-        PrintWriter printWriter = new PrintWriter(exchange.getResponseBody());
-        String username = pathParts[1];
-        try {
-            if (pathParts.length == 2) {
-//                FamilyService.FAMILY_SERVICE.updateGenerations();
-            } else if (pathParts.length == 3) {
-//                FamilyService.FAMILY_SERVICE.removeRelatives(username);
-            }
 
-
-            gson.toJson(new ResponseMessage(""), printWriter); // Write response
-            exchange.sendResponseHeaders(HttpURLConnection.HTTP_OK, 0);
-        } catch (Exception e) {
-            gson.toJson(new ResponseMessage(e.getMessage()), printWriter); // Write response
-            exchange.sendResponseHeaders(HttpURLConnection.HTTP_CONFLICT,0);
-        } finally {
-            printWriter.close();
-        }
-        return;
-    }
 }
