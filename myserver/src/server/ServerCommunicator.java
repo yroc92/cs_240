@@ -21,6 +21,7 @@ public class ServerCommunicator {
     private LoadResource loadResource;
     private PersonResource personResource;
     private EventResource eventResource;
+    private DefaultResource defaultResource;
 
     ServerCommunicator() {
         userResource = new UserResource(new Database());
@@ -29,6 +30,7 @@ public class ServerCommunicator {
         loadResource = new LoadResource(new Database());
         personResource = new PersonResource(new Database());
         eventResource = new EventResource(new Database());
+        defaultResource = new DefaultResource();
     }
 
     private void run() {
@@ -79,7 +81,7 @@ public class ServerCommunicator {
 
             // Case statements for the different endpoints
             if (pathParts.length < 2) {
-                exchange.sendResponseHeaders(HttpURLConnection.HTTP_NOT_FOUND, -1);
+                defaultResource.handle(exchange);
                 return;
             }
             switch (pathParts[1]) {
@@ -109,8 +111,7 @@ public class ServerCommunicator {
 
                 default:
                     // 404 error
-                    System.err.println("Unknown path + " + path);
-                    exchange.sendResponseHeaders(HttpURLConnection.HTTP_NOT_FOUND, -1);
+                    defaultResource.handle(exchange);
             }
 
             exchange.close();

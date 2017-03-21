@@ -3,12 +3,15 @@ package server;
 import com.google.gson.Gson;
 import com.sun.net.httpserver.HttpExchange;
 import org.sqlite.SQLiteConfig;
+import server.commonClasses.DaoClasses.AuthTokenDAO;
 import server.commonClasses.DaoClasses.EventDAO;
 import server.commonClasses.DaoClasses.PersonDAO;
 import server.commonClasses.DaoClasses.UserDAO;
 import server.commonClasses.modelClasses.ResponseMessage;
 
 import java.io.IOException;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.sql.*;
 
@@ -23,6 +26,7 @@ public class Database {
     private UserDAO userDao;
     private PersonDAO personDAO;
     private EventDAO eventDAO;
+    private AuthTokenDAO authTokenDAO;
 
     public Database() {
         gson = new Gson();
@@ -30,6 +34,7 @@ public class Database {
         userDao = new UserDAO(this);
         personDAO = new PersonDAO(this);
         eventDAO = new EventDAO(this);
+        authTokenDAO = new AuthTokenDAO(this);
     }
 
     public static void init() {
@@ -132,6 +137,10 @@ public class Database {
 
     public EventDAO getEventDAO() { return eventDAO; }
 
+    public AuthTokenDAO getAuthTokenDAO() {
+        return authTokenDAO;
+    }
+
     /**
      * Create the person table in the database.
      */
@@ -219,12 +228,13 @@ public class Database {
      * Helper function to send HTTP response objects to the client.
      */
     public void sendResponse(HttpExchange exchange, Object object, int responseHeader, int contentLength) throws IOException {
-        PrintWriter printWriter = new PrintWriter(exchange.getResponseBody());
+        OutputStreamWriter outputStream = new OutputStreamWriter(exchange.getResponseBody());
+//        PrintWriter printWriter = new PrintWriter(exchange.getResponseBody());
         if (object != null) {
-            gson.toJson(object, printWriter); // Write response
+            gson.toJson(object, outputStream); // Write response
         }
         exchange.sendResponseHeaders(responseHeader, contentLength);
-        printWriter.close();
+        outputStream.close();
     }
 
 

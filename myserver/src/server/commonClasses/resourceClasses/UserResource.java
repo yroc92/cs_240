@@ -69,7 +69,6 @@ public class UserResource {
 
             // Create the response (an auth token) and add Auth token to the auth_token table.
             AuthToken newAuthToken = new AuthToken(newUser.getToken(), newUser.getPersonID(), newUser.getUsername());
-//            db.getAuthTokenDAO().addAuthToken(newAuthToken);
             AuthTokenDAO authTokenDAO = new AuthTokenDAO(db);
             authTokenDAO.addAuthToken(newAuthToken);
             // Set the currently logged in user with this auth token.

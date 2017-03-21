@@ -2,8 +2,10 @@ package server.commonClasses.DaoClasses;
 
 import server.Database;
 import server.commonClasses.modelClasses.AuthToken;
+import server.commonClasses.modelClasses.User;
 
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 
 /**
@@ -34,4 +36,38 @@ public class AuthTokenDAO {
         }
     }
 
+    public User getUserByAuthToken(String authToken) throws SQLException {
+        String findUserSql = "SELECT * FROM user WHERE token = ?";
+        PreparedStatement findUserStmt = null;
+        ResultSet findUserResults;
+        // Search the database for qualifying user.
+        try {
+            findUserStmt = db.prepare(findUserSql);
+            findUserStmt.setString(1, authToken);
+            findUserResults = findUserStmt.executeQuery();
+
+            // Return the result set object if it is valid.
+            if (findUserResults.next()) {
+                User foundUser = new User(findUserResults.getString("userName"),
+                        findUserResults.getString("password"),
+                        findUserResults.getString("email"),
+                        findUserResults.getString("firstName"),
+                        findUserResults.getString("lastName"),
+                        findUserResults.getString("gender"),
+                        findUserResults.getString("token"),
+                        findUserResults.getString("personID"));
+                return foundUser;
+            } else {
+                return null;
+            }
+        } catch (SQLException e) {
+            System.err.println("Failed to find user, " + e.getMessage());
+            e.printStackTrace();
+        } finally {
+            if (findUserStmt != null) {
+                findUserStmt.close();
+            }
+        }
+        return null;
+    }
 }
