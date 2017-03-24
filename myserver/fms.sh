@@ -5,7 +5,7 @@ SHARED_MODULE="shared"
 
 #"com.example" is the package name.
 #"Server" would be the class with the main function.
-PACKAGE_NAME_TO_MAIN="main.java.test.java.server.ServerCommunicator"
+PACKAGE_NAME_TO_MAIN="main.java.server.ServerCommunicator"
 PACKAGE_NAME_TO_TEST_DRIVER="test.java.server.TestMain"
 LIBS_FOLDER="./lib"
 

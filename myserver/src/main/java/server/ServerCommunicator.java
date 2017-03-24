@@ -44,7 +44,7 @@ public class ServerCommunicator {
             server = HttpServer.create(new InetSocketAddress(portNumber),
                     maxWaitingConnections);
         } catch (IOException e) {
-            System.out.println("Could not create HTTP main.test.java.server: " + e.getMessage());
+            System.out.println("Could not create HTTP main.server: " + e.getMessage());
             e.printStackTrace();
             return;
         }
@@ -103,14 +103,14 @@ public class ServerCommunicator {
     };
 
     /**
-     * Create a context for our test.java.server.
+     * Create a context for our server.
      */
     private void setupContext() {
         server.createContext("/", serverHandler);
     }
 
     /**
-     * Main function runs the test.java.server.
+     * Main function runs the server.
      * @param args
      */
     public static void main(String[] args) {

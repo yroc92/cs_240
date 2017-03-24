@@ -3,7 +3,7 @@
     <head>
         <meta charset="utf-8">
         <meta http-equiv="x-ua-compatible" content="ie=edge">
-        <title> Family Map app main.test.java.server </title>
+        <title> Family Map app main.server </title>
         <meta name="description" content="">
         <meta name="viewport" content="width=device-width, initial-scale=1">
 
@@ -161,7 +161,7 @@
     <body>
         <div style="text-align:center;">
             <h1>
-                This is the Family Map main.test.java.server used to power the Family Map Android app.
+                This is the Family Map main.server used to power the Family Map Android app.
             </h1>
             <h2>Built to power BYU CS 240 Family Map Application for Android</h2>
         </div>
@@ -183,7 +183,7 @@
                         No authorization token is required.
                     </li>
                     <li>
-                      <a href="javascript:load()">/load/</a> This API will load the main.test.java.server&apos;s database with
+                      <a href="javascript:load()">/load/</a> This API will load the main.server&apos;s database with
                         data provided by json text in the response body. The json text must contain an array of users as
                         defined in the register details in addition to a personID, an array of persons, and an array of events.
                         WARNING: all data from the database is wiped when this is called. The json file will be specified in
@@ -191,9 +191,9 @@
                         No authorization token is required.
                     </li>
                     <li>
-                      <a href="javascript:fill()" >/fill/[username]</a> This API will fill the main.test.java.server&apos;s
+                      <a href="javascript:fill()" >/fill/[username]</a> This API will fill the main.server&apos;s
                         database with fake data for the specified user name. The "username" parameter is required
-                        and must be a user already registered with the main.test.java.server. It can be any user name you choose.
+                        and must be a user already registered with the main.server. It can be any user name you choose.
                         If there is any data in the database associated with the given user name, it is erased.
                         This API can be run from a browser by simply typing it in the address bar (or by pressing
                         the link, filling in the details, and clicking submit). The base person generated should be a
@@ -201,8 +201,8 @@
                         No authorization token is required.</li>
                     <li>
                       <a href="javascript:fill(true)" >/fill/[username]/{generations}</a> This API will fill the
-                        main.test.java.server&apos;s database with fake data for the specified user name. The "username" parameter
-                        is required and must be a user already registered with the main.test.java.server. All the ancestor data
+                        main.server&apos;s database with fake data for the specified user name. The "username" parameter
+                        is required and must be a user already registered with the main.server. All the ancestor data
                         associated with this user is erased. This API can be run from a browser by simply
                         typing it in the address bar (or by pressing the link, filling in the details, and clicking submit).
                         The base person generated should be a person representing the user.
@@ -265,7 +265,7 @@
                 A few notes:
                 <ul>
                     <li>
-                        The authorization token is returned from the main.test.java.server in the "Authorization"
+                        The authorization token is returned from the main.server in the "Authorization"
                         attribute of the JSON object returned by the "/user/register" and "/user/login" APIs.
                         The authorization token must be placed in the "Authorization" header
                         on all subsequent HTTP requests.
@@ -273,7 +273,7 @@
                     <li>
                         If something fails, the returned JSON object contains a "message" attribute
                         which contains a message describing what happened.
-                        Watch for these as they will give helpful insight into why the main.test.java.server did not
+                        Watch for these as they will give helpful insight into why the main.server did not
                         work as expected.
                     </li>
                 </ul>
@@ -296,7 +296,7 @@
           </div>
           <p class="w3-col w3-container center" style="width:3%"/>
           <div class="w3-col w3-container bottom" style="width:45%">
-            Response From the main.test.java.server: <textarea type="text" id="response" class="responseBody" readonly></textarea>
+            Response From the main.server: <textarea type="text" id="response" class="responseBody" readonly></textarea>
           <div>
           <p class="w3-col w3-container center" style="width:3%"/>
         </div>

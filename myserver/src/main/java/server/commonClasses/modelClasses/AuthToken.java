@@ -3,7 +3,7 @@ package main.java.server.commonClasses.modelClasses;
 /**
  * Created by Cory on 2/17/17.
  *
- * The AuthToken class specifies a token a user will utilize to log in and authenticate to our main.test.java.server.
+ * The AuthToken class specifies a token a user will utilize to log in and authenticate to our main.server.
  */
 public class AuthToken {
     /**
