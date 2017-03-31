@@ -1,4 +1,4 @@
-package main.java.server.commonClasses.resourceClasses;
+package main.java.server.commonClasses.handlerClasses;
 
 import com.sun.net.httpserver.HttpExchange;
 
@@ -15,6 +15,11 @@ import java.nio.file.Paths;
  */
 public class DefaultResource {
 
+    /**
+     * This handler runs when no other handler is appropriate.
+     * @param exchange
+     * @throws IOException
+     */
     public void handle(HttpExchange exchange) throws IOException {
         //How to get the path from the URI
         URI uri = exchange.getRequestURI();

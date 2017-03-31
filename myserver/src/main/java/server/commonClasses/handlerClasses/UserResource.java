@@ -1,9 +1,10 @@
-package main.java.server.commonClasses.resourceClasses;
+package main.java.server.commonClasses.handlerClasses;
 
 
 import com.google.gson.Gson;
 import com.sun.net.httpserver.HttpExchange;
 import main.java.server.Database;
+import main.java.server.commonClasses.helperClasses.LoginObject;
 import main.java.server.commonClasses.modelClasses.*;
 import main.java.server.services.FamilyService;
 import main.java.server.commonClasses.DaoClasses.AuthTokenDAO;
@@ -17,6 +18,8 @@ import java.util.UUID;
 
 /**
  * Created by Cory on 3/10/17.
+ *
+ * This handler class deals with requests that begin with "/user"
  */
 public class UserResource {
     private Gson gson;
@@ -49,6 +52,11 @@ public class UserResource {
 
     }
 
+    /**
+     * This method is called when the client requests "/user/register"
+     * @param exchange
+     * @throws IOException
+     */
     private void registerUser(HttpExchange exchange) throws IOException {
         try {
             InputStreamReader inputStreamReader = new InputStreamReader(exchange.getRequestBody());
@@ -81,6 +89,11 @@ public class UserResource {
     }
 
 
+    /**
+     * This method is called when the client requests "/user/login"
+     * @param exchange
+     * @throws IOException
+     */
     private void loginUser(HttpExchange exchange) throws IOException {
         // Import the request in the form of a login object.
         InputStreamReader inputStreamReader = new InputStreamReader(exchange.getRequestBody());

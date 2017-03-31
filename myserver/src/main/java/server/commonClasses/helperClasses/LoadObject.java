@@ -1,10 +1,14 @@
-package main.java.server.commonClasses.modelClasses;
+package main.java.server.commonClasses.helperClasses;
+
+import main.java.server.commonClasses.modelClasses.Event;
+import main.java.server.commonClasses.modelClasses.Person;
+import main.java.server.commonClasses.modelClasses.User;
 
 import java.util.ArrayList;
 
 /**
  * Created by Cory on 3/19/17.
- * This class represents the format of the request data for the Load API
+ * This class represents the format of the request data for the Load API.
  * It includes arrays of the 3 main data types for our Family Map database.
  */
 public class LoadObject {

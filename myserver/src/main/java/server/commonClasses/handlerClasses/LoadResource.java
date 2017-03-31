@@ -1,9 +1,9 @@
-package main.java.server.commonClasses.resourceClasses;
+package main.java.server.commonClasses.handlerClasses;
 
 import com.google.gson.Gson;
 import com.sun.net.httpserver.HttpExchange;
 import main.java.server.Database;
-import main.java.server.commonClasses.modelClasses.LoadObject;
+import main.java.server.commonClasses.helperClasses.LoadObject;
 
 import java.io.IOException;
 import java.io.InputStreamReader;

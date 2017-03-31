@@ -19,6 +19,11 @@ public class UserDAO {
         this.db = db;
     }
 
+    /**
+     * Add a new user to the database.
+     * @param newUser
+     * @throws SQLException
+     */
     public void addUser(User newUser) throws SQLException {
 
         try {
@@ -36,7 +41,6 @@ public class UserDAO {
             insert.execute();
             db.commitSqlStatement(insert);
         } catch (SQLException e) {
-//            e.printStackTrace();
             System.err.println(e.getMessage());
             db.rollback();
             throw e;
@@ -44,6 +48,11 @@ public class UserDAO {
 
     }
 
+    /**
+     * Add an array of users to the database.
+     * @param users
+     * @throws SQLException
+     */
     public void addArrayOfUsers(ArrayList<User> users) throws SQLException {
         for (User user : users) {
             User newUser = new User(user.getUsername(), user.getPassword(), user.getEmail(), user.getFirstName(),
@@ -52,6 +61,12 @@ public class UserDAO {
         }
     }
 
+    /**
+     * Returns a user found by their userName.
+     * @param userName
+     * @return
+     * @throws SQLException
+     */
     public User getUserByUserName(String userName) throws SQLException {
         String findUserSql = "SELECT * FROM user WHERE userName = ?";
         PreparedStatement findUserStmt = null;
@@ -87,6 +102,13 @@ public class UserDAO {
         return null;
     }
 
+    /**
+     * Logs in a user.
+     * @param userName
+     * @param password
+     * @return
+     * @throws SQLException
+     */
     public User login(String userName, String password) throws SQLException {
         // Initialize variables.
         PreparedStatement loginStmt = null;

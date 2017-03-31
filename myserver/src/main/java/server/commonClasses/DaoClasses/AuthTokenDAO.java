@@ -19,6 +19,10 @@ public class AuthTokenDAO {
 
     public AuthTokenDAO(Database db) { this.db = db; }
 
+    /**
+     * Add an auth token to the database.
+     * @param newToken
+     */
     public void addAuthToken(AuthToken newToken) {
         try {
             String sqlStatement = "INSERT INTO auth_token values (?, ?, ?, DateTime('now'))";
@@ -36,6 +40,12 @@ public class AuthTokenDAO {
         }
     }
 
+    /**
+     * Returns a user found by its auth token.
+     * @param authToken
+     * @return
+     * @throws SQLException
+     */
     public User getUserByAuthToken(String authToken) throws SQLException {
         String findUserSql = "SELECT * FROM user WHERE token = ?";
         PreparedStatement findUserStmt = null;

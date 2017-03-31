@@ -14,6 +14,8 @@ import java.util.UUID;
 
 /**
  * Created by Cory on 3/19/17.
+ *
+ * DAO for the Event Model.
  */
 public class EventDAO {
     private Database db;
@@ -22,6 +24,10 @@ public class EventDAO {
         this.db = db;
     }
 
+    /**
+     * Add an event to the database.
+     * @param newEvent
+     */
     public void addEvent(Event newEvent) {
 
         try {
@@ -46,12 +52,24 @@ public class EventDAO {
         }
     }
 
+    /**
+     * Add an array of events to the database.
+     * @param events
+     * @throws SQLException
+     */
     public void addArrayOfEvents(ArrayList<Event> events) throws SQLException {
         for (Event event : events) {
             addEvent(event);
         }
     }
 
+    /**
+     * Given a single person (and, optionally, their spouse),
+     * generate realistic, random event data.
+     * @param person
+     * @param spouse
+     * @return
+     */
     public ArrayList<Event> generateEvents(Person person, Person spouse) {
         ArrayList<Event> events = new ArrayList<>();
         String[] eventTypes = {"birth", "baptism", "marriage", "death"};
@@ -87,6 +105,12 @@ public class EventDAO {
         return events;
     }
 
+    /**
+     * Return an event by searching for it by it's ID
+     * @param eventID
+     * @return
+     * @throws SQLException
+     */
     public Event getEventByEventID(String eventID) throws SQLException {
         String findEventSql = "SELECT * FROM event WHERE eventID = ?";
         PreparedStatement findEventStmt = null;

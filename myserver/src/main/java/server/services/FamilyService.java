@@ -11,8 +11,8 @@ import java.util.ArrayList;
 
 /**
  * Created by Cory on 3/13/17.
- * This service enumerated class deals with the various operations concerning adding, removing, and
- * updating family relationships in the database.
+ * This singleton class deals with the various operations concerning adding, removing, and
+ * updating family relationships in the database. It cleans up complicated logic from other classes.
  */
 public enum FamilyService {
     FAMILY_SERVICE;
@@ -52,6 +52,12 @@ public enum FamilyService {
         }
     }
 
+    /**
+     * Returns a list of persons that have a common descendant.
+     * @param descendant
+     * @return
+     * @throws SQLException
+     */
     public ArrayList<Person> getRelativePersons(String descendant) throws SQLException {
         String findPersonsSql = "SELECT * FROM person WHERE descendant = ?";
         PreparedStatement findPersonsStmt = null;
@@ -89,6 +95,12 @@ public enum FamilyService {
         return null;
     }
 
+    /**
+     * Returns a list of events that share a common descendant.
+     * @param descendant
+     * @return
+     * @throws SQLException
+     */
     public ArrayList<Event> getRelativeEvents(String descendant) throws SQLException {
         String findEventsSql = "SELECT * FROM event WHERE descendant = ?";
         PreparedStatement findEventsStmt = null;
@@ -127,6 +139,11 @@ public enum FamilyService {
         return null;
     }
 
+    /**
+     * Removes all persons with a common descendant.
+     * @param descendant
+     * @throws SQLException
+     */
     public void removeRelatives(String descendant) throws SQLException {
         // If the user isn't found in the database, stop this.
         if (db.getUserDao().getUserByUserName(descendant) == null) {
@@ -142,7 +159,7 @@ public enum FamilyService {
             for (String sql : sqlStrings) {
                 PreparedStatement preparedStatement = db.prepare(sql);
                 preparedStatement.setString(1, descendant);
-                System.out.println("In FamilyService delete. Lines created/updated: " +preparedStatement.executeUpdate());
+                preparedStatement.executeUpdate();
                 db.commitSqlStatement(preparedStatement);
             }
         } catch (SQLException e) {

@@ -1,4 +1,4 @@
-package main.java.server.commonClasses.resourceClasses;
+package main.java.server.commonClasses.handlerClasses;
 
 import com.google.gson.Gson;
 import com.sun.net.httpserver.HttpExchange;
@@ -13,6 +13,8 @@ import java.sql.SQLException;
 
 /**
  * Created by Cory on 3/15/17.
+ *
+ * Handler class that represents to the "/fill/[username]" endpoint.
  */
 public class FillResource {
     private Database db;
@@ -49,6 +51,13 @@ public class FillResource {
     }
 
 
+    /**
+     * This method fills the database with new information relative to the username
+     * @param exchange
+     * @param user
+     * @param generations
+     * @throws IOException
+     */
     private void fill(HttpExchange exchange, User user, int generations) throws IOException {
         // Does the
         try {

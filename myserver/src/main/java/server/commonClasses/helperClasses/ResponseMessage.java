@@ -1,4 +1,4 @@
-package main.java.server.commonClasses.modelClasses;
+package main.java.server.commonClasses.helperClasses;
 
 /**
  * Created by Cory on 3/15/17.

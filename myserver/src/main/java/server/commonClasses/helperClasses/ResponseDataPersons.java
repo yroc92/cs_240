@@ -1,10 +1,12 @@
-package main.java.server.commonClasses.modelClasses;
+package main.java.server.commonClasses.helperClasses;
+
+import main.java.server.commonClasses.modelClasses.Person;
 
 import java.util.ArrayList;
 
 /**
  * Created by Cory on 3/21/17.
- * Used for formatting data arrays for response bodies.
+ * Used for formatting person data arrays for response bodies.
  */
 public class ResponseDataPersons {
     private ArrayList<Person> data;

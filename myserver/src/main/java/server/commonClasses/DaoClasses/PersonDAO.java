@@ -13,6 +13,8 @@ import java.util.UUID;
 
 /**
  * Created by Cory on 3/11/17.
+ *
+ * DAO for the Person Model
  */
 public class PersonDAO {
 

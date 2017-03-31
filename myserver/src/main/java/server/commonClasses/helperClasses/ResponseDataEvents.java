@@ -1,10 +1,12 @@
-package main.java.server.commonClasses.modelClasses;
+package main.java.server.commonClasses.helperClasses;
+
+import main.java.server.commonClasses.modelClasses.Event;
 
 import java.util.ArrayList;
 
 /**
  * Created by Cory on 3/21/17.
- * Used for formatting data arrays for response bodies.
+ * Used for formatting event data arrays for response bodies.
  */
 public class ResponseDataEvents {
     private ArrayList<Event> data;

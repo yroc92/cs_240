@@ -1,11 +1,11 @@
-package main.java.server.commonClasses.resourceClasses;
+package main.java.server.commonClasses.handlerClasses;
 
 import com.google.gson.Gson;
 import com.sun.net.httpserver.Headers;
 import com.sun.net.httpserver.HttpExchange;
 import main.java.server.Database;
 import main.java.server.commonClasses.modelClasses.Event;
-import main.java.server.commonClasses.modelClasses.ResponseDataEvents;
+import main.java.server.commonClasses.helperClasses.ResponseDataEvents;
 import main.java.server.commonClasses.modelClasses.User;
 import main.java.server.services.FamilyService;
 
@@ -16,6 +16,7 @@ import java.util.ArrayList;
 
 /**
  * Created by Cory on 3/21/17.
+ * Handler class that represents the "/event" endpoint.
  */
 public class EventResource {
     private Database db;

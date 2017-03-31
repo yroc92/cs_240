@@ -8,37 +8,48 @@ import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 import com.sun.net.httpserver.HttpServer;
 
+/**
+ * The server communicator class is the front of the server. It takes in client requests and initializes
+ * the server app.
+ */
 public class ServerCommunicator {
 
     public static final int SERVER_PORT_NUMBER = 8080;
     private static final int MAX_WAITING_CONNECTIONS = 10;
     private HttpServer server;
-    private main.java.server.commonClasses.resourceClasses.UserResource userResource;
-    private main.java.server.commonClasses.resourceClasses.ClearResource clearResource;
-    private main.java.server.commonClasses.resourceClasses.FillResource fillResource;
-    private main.java.server.commonClasses.resourceClasses.LoadResource loadResource;
-    private main.java.server.commonClasses.resourceClasses.PersonResource personResource;
-    private main.java.server.commonClasses.resourceClasses.EventResource eventResource;
-    private main.java.server.commonClasses.resourceClasses.DefaultResource defaultResource;
+    private main.java.server.commonClasses.handlerClasses.UserResource userResource;
+    private main.java.server.commonClasses.handlerClasses.ClearResource clearResource;
+    private main.java.server.commonClasses.handlerClasses.FillResource fillResource;
+    private main.java.server.commonClasses.handlerClasses.LoadResource loadResource;
+    private main.java.server.commonClasses.handlerClasses.PersonResource personResource;
+    private main.java.server.commonClasses.handlerClasses.EventResource eventResource;
+    private main.java.server.commonClasses.handlerClasses.DefaultResource defaultResource;
 
     ServerCommunicator() {
-        userResource = new main.java.server.commonClasses.resourceClasses.UserResource(new Database());
-        clearResource = new main.java.server.commonClasses.resourceClasses.ClearResource(new Database());
-        fillResource = new main.java.server.commonClasses.resourceClasses.FillResource(new Database());
-        loadResource = new main.java.server.commonClasses.resourceClasses.LoadResource(new Database());
-        personResource = new main.java.server.commonClasses.resourceClasses.PersonResource(new Database());
-        eventResource = new main.java.server.commonClasses.resourceClasses.EventResource(new Database());
-        defaultResource = new main.java.server.commonClasses.resourceClasses.DefaultResource();
+        userResource = new main.java.server.commonClasses.handlerClasses.UserResource(new Database());
+        clearResource = new main.java.server.commonClasses.handlerClasses.ClearResource(new Database());
+        fillResource = new main.java.server.commonClasses.handlerClasses.FillResource(new Database());
+        loadResource = new main.java.server.commonClasses.handlerClasses.LoadResource(new Database());
+        personResource = new main.java.server.commonClasses.handlerClasses.PersonResource(new Database());
+        eventResource = new main.java.server.commonClasses.handlerClasses.EventResource(new Database());
+        defaultResource = new main.java.server.commonClasses.handlerClasses.DefaultResource();
     }
 
+    /**
+     * Sets off the server to listen for endpoint hits.
+     */
     private void run() {
         Database.init();
-
         setUpServer(SERVER_PORT_NUMBER, MAX_WAITING_CONNECTIONS);
         setupContext();
         server.start();
     }
 
+    /**
+     * Sets up the HTTP server, waits for connections.
+     * @param portNumber
+     * @param maxWaitingConnections
+     */
     private void setUpServer(int portNumber, int maxWaitingConnections) {
         try {
             server = HttpServer.create(new InetSocketAddress(portNumber),
@@ -52,6 +63,9 @@ public class ServerCommunicator {
         server.setExecutor(null); // use the default executor
     }
 
+    /**
+     * Handles the endpoints.
+     */
     private HttpHandler serverHandler = new HttpHandler() {
         @Override
         public void handle(HttpExchange exchange) throws IOException {

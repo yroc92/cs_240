@@ -1,11 +1,11 @@
-package main.java.server.commonClasses.resourceClasses;
+package main.java.server.commonClasses.handlerClasses;
 
 import com.google.gson.Gson;
 import com.sun.net.httpserver.Headers;
 import com.sun.net.httpserver.HttpExchange;
 import main.java.server.Database;
 import main.java.server.commonClasses.modelClasses.Person;
-import main.java.server.commonClasses.modelClasses.ResponseDataPersons;
+import main.java.server.commonClasses.helperClasses.ResponseDataPersons;
 import main.java.server.commonClasses.modelClasses.User;
 import main.java.server.services.FamilyService;
 
@@ -16,6 +16,8 @@ import java.util.ArrayList;
 
 /**
  * Created by Cory on 3/20/17.
+ *
+ * This handler class deals with requests beginning with "/person"
  */
 public class PersonResource {
 
@@ -40,6 +42,11 @@ public class PersonResource {
             }
     }
 
+    /**
+     * This method is called when the client requests "/person". It gives back all related family data.
+     * @param exchange
+     * @throws IOException
+     */
     private void getFamilyMembers(HttpExchange exchange) throws IOException {
         // Check to see if this user is allowed to view info
         Headers headers = exchange.getRequestHeaders();
@@ -60,6 +67,12 @@ public class PersonResource {
         }
     }
 
+    /**
+     * This method is called when the client makes a request in the form of "/person/:id"
+     * @param exchange
+     * @param personID
+     * @throws IOException
+     */
     private void getPersonByID(HttpExchange exchange, String personID) throws IOException {
         // Check to see if this user is allowed to view info
         Headers headers = exchange.getRequestHeaders();

@@ -7,7 +7,7 @@ import main.java.server.commonClasses.DaoClasses.AuthTokenDAO;
 import main.java.server.commonClasses.DaoClasses.EventDAO;
 import main.java.server.commonClasses.DaoClasses.PersonDAO;
 import main.java.server.commonClasses.DaoClasses.UserDAO;
-import main.java.server.commonClasses.modelClasses.ResponseMessage;
+import main.java.server.commonClasses.helperClasses.ResponseMessage;
 
 import java.io.IOException;
 import java.io.OutputStreamWriter;
@@ -15,6 +15,7 @@ import java.sql.*;
 
 /**
  * Created by Cory on 3/11/17.
+ * This class controls the connection to the database. Acts as an interface for the DAO as well.
  */
 public class Database {
 
@@ -35,6 +36,9 @@ public class Database {
         authTokenDAO = new AuthTokenDAO(this);
     }
 
+    /**
+     * Initializes the SQL Database connection.
+     */
     public static void init() {
 
         if (Database.conn != null) { return; }
@@ -72,6 +76,10 @@ public class Database {
         }
     }
 
+    /**
+     * Commits a prepared SQL statement to the Database connection.
+     * @throws SQLException
+     */
     public static void commitSqlStatement() throws SQLException {
         Database.conn.commit();
     }
@@ -126,16 +134,6 @@ public class Database {
             System.err.println("Could not create all tables");
         }
     }
-
-    public UserDAO getUserDao() { return userDao; }
-
-    public PersonDAO getPersonDAO() {
-        return personDAO;
-    }
-
-    public EventDAO getEventDAO() { return eventDAO; }
-
-    public AuthTokenDAO getAuthTokenDAO() { return authTokenDAO; }
 
     /**
      * Create the person table in the database.
@@ -232,5 +230,14 @@ public class Database {
         outputStream.close();
     }
 
+    public UserDAO getUserDao() { return userDao; }
+
+    public PersonDAO getPersonDAO() {
+        return personDAO;
+    }
+
+    public EventDAO getEventDAO() { return eventDAO; }
+
+    public AuthTokenDAO getAuthTokenDAO() { return authTokenDAO; }
 
 }

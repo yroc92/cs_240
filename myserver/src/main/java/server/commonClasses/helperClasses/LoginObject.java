@@ -1,7 +1,8 @@
-package main.java.server.commonClasses.modelClasses;
+package main.java.server.commonClasses.helperClasses;
 
 /**
  * Created by Cory on 3/20/17.
+ * This class is to structure the request body for a login request.
  */
 public class LoginObject {
     private String userName;

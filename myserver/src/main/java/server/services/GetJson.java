@@ -10,6 +10,8 @@ import java.util.ArrayList;
 import java.util.Random;
 /**
  * Created by Cory on 3/14/17.
+ *
+ * This singleton class obtains JSON data from src/json. It is primarily used for generating random event/person data.
  */
 public enum GetJson  {
 
@@ -25,6 +27,9 @@ public enum GetJson  {
         init();
     }
 
+    /**
+     * On startup, the singleton loads all the JSON data into accessible arrays.
+     */
     private void init() {
         gson = new Gson();
         String[] paths = {"src/json/fnames.json", "src/json/locations.json", "src/json/mnames.json", "src/json/snames.json"};
@@ -33,7 +38,7 @@ public enum GetJson  {
             try {
                 FileReader reader = new FileReader(new File(path));
                 JsonReader jsonReader = new JsonReader(reader);
-                elements.add((JsonElement) gson.fromJson(jsonReader, JsonElement.class));
+                elements.add(gson.fromJson(jsonReader, JsonElement.class));
             } catch (FileNotFoundException e) {
                 e.printStackTrace();
             }
@@ -44,24 +49,40 @@ public enum GetJson  {
         snames = elements.get(3).getAsJsonObject().getAsJsonArray("data");
     }
 
+    /**
+     *
+     * @return String: name of a male
+     */
     public String getRandomMaleName() {
         Random selector = new Random();
         int n = selector.nextInt(mnames.size() - 1);
         return mnames.get(n).getAsString();
     }
 
+    /**
+     *
+     * @return JsonObject: random location data for an event.
+     */
     public JsonObject getRandomLocation() {
         Random selector = new Random();
         int n = selector.nextInt(locations.size() - 1);
         return locations.get(n).getAsJsonObject();
     }
 
+    /**
+     *
+     * @return String: a random female name.
+     */
     public String getRandomFemaleName() {
         Random selector = new Random();
         int n = selector.nextInt(fnames.size() - 1);
         return fnames.get(n).getAsString();
     }
 
+    /**
+     *
+     * @return String: a random surname.
+     */
     public String getRandomSurname() {
         Random selector = new Random();
         int n = selector.nextInt(snames.size() - 1);

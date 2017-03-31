@@ -12,7 +12,7 @@ LIBS_FOLDER="./lib"
 # CODE_LOC="$SERVER_MODULE/src/main/* $SHARED_MODULE/*"
 # TEST_CODE_LOC="$SERVER_MODULE/src/test/* $SHARED_MODULE/*"
 CODE_LOC="$SERVER_MODULE/src/main/*"
-TEST_CODE_LOC="$SERVER_MODULE/src/test/*"
+TEST_CODE_LOC="$SERVER_MODULE/src/main/* $SERVER_MODULE/src/test/*"
 
 
 function remove {
