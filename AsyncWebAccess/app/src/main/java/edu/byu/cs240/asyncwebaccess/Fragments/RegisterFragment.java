@@ -12,6 +12,7 @@ import android.widget.Toast;
 
 import edu.byu.cs240.asyncwebaccess.ModelClasses.User;
 import edu.byu.cs240.asyncwebaccess.R;
+import edu.byu.cs240.asyncwebaccess.ServerProxy;
 
 /**
  * Created by corycooper on 3/26/17.
@@ -39,9 +40,9 @@ public class RegisterFragment extends Fragment {
 
         editUsername = (EditText)v.findViewById(R.id.editUsername);
         editPassword = (EditText)v.findViewById(R.id.editPassword);
-        editEmail = (EditText)v.findViewById(R.id.editPassword);
-        editFirstName = (EditText)v.findViewById(R.id.editPassword);
-        editLastName = (EditText)v.findViewById(R.id.editPassword);
+        editEmail = (EditText)v.findViewById(R.id.editEmail);
+        editFirstName = (EditText)v.findViewById(R.id.editFirstName);
+        editLastName = (EditText)v.findViewById(R.id.editLastName);
         radioSex = (RadioGroup)v.findViewById(R.id.radioSex);
 
         registerUserButton = (Button)v.findViewById(R.id.buttonRegister);
@@ -60,7 +61,10 @@ public class RegisterFragment extends Fragment {
                     newUser.setGender("f");
                 }
                 if (newUser.validRegistration()) {
-                    Toast.makeText(getContext(), "Valid registration", Toast.LENGTH_SHORT).show();
+                    ServerProxy.SERVER_PROXY.registerUser(newUser, getActivity());
+//                    String toastString = "First Name: " + newUser.getFirstName() + "\n" + "Last Name: " + newUser.getLastName();
+//                    Toast.makeText(getContext(), toastString, Toast.LENGTH_SHORT).show();
+
 
                 } else {
                     Toast.makeText(getContext(), "Please fill out all fields.", Toast.LENGTH_SHORT).show();
