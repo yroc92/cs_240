@@ -27,8 +27,8 @@ public class mySpellCorrector implements ISpellCorrector {
     }
 
     public String suggestSimilarWord(String inputWord) throws NoSimilarWordFoundException{
-        myDictionary.wordsOneEditDistance(inputWord);   // Do the best word algorithm
-        String best = myDictionary.getBestWord();       // Store best word
+        myDictionary.wordsOneEditDistance(inputWord.toLowerCase());   // Do the best word algorithm
+        String best = myDictionary.getBestWord().toLowerCase();       // Store best word
 //        myDictionary = new Dictionary();                // Reset dictionary
         if (best == null) throw new NoSimilarWordFoundException();  // See if best word is null
         return best;
