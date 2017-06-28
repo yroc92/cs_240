@@ -5,8 +5,6 @@ import java.io.IOException;
 public interface ISpellCorrector {
 	
 	@SuppressWarnings("serial")
-	public static class NoSimilarWordFoundException extends Exception {
-	}
 	
 	/**
 	 * Tells this <code>ISpellCorrector</code> to use the given file as its dictionary
@@ -21,8 +19,7 @@ public interface ISpellCorrector {
 	 * <code>inputWord</code>
 	 * @param inputWord
 	 * @return The suggestion
-	 * @throws NoSimilarWordFoundException If no similar word is in the dictionary
 	 */
-	public String suggestSimilarWord(String inputWord) throws NoSimilarWordFoundException;
+	public String suggestSimilarWord(String inputWord);
 
 }

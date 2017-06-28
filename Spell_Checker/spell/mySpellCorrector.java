@@ -26,11 +26,14 @@ public class mySpellCorrector implements ISpellCorrector {
         }
     }
 
-    public String suggestSimilarWord(String inputWord) throws NoSimilarWordFoundException{
+    public String suggestSimilarWord(String inputWord) {
         myDictionary.wordsOneEditDistance(inputWord.toLowerCase());   // Do the best word algorithm
-        String best = myDictionary.getBestWord().toLowerCase();       // Store best word
+        String best = myDictionary.getBestWord();       // Store best word
 //        myDictionary = new Dictionary();                // Reset dictionary
-        if (best == null) throw new NoSimilarWordFoundException();  // See if best word is null
-        return best;
+//        if (best == null) throw new NoSimilarWordFoundException();  // See if best word is null
+        if (best == null) {
+            return best;
+        }
+        return best.toLowerCase();
     }
 }
