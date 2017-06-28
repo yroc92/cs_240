@@ -78,13 +78,6 @@
                 android:text="Female" />
         </RadioGroup>
 
-        <Button
-            android:id="@+id/buttonRegister"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Register"
-            android:layout_marginTop="30px"
-            android:layout_marginRight="50px"
-            android:layout_marginLeft="50px"/>
+
     </LinearLayout>
 </LinearLayout>

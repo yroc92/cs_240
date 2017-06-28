@@ -165,7 +165,6 @@ public class EvilHangman implements StudentEvilHangmanGameController {
                 numCorrect++;
             }
         }
-        System.out.println("Here i am!!!!");
         if (numCorrect != 0) {
             System.out.println("Yes, there is " +Integer.toString(numCorrect) + " "+ currentGuess);
         } else {
