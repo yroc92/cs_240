@@ -26,7 +26,9 @@ public class Dictionary implements ITrie {
     public void add(String word) {
         String wordL = word.toLowerCase();  // convert to lowercase
         Node currNode = rootNode;         // create you current node
-        dictionary.add(wordL);              // recursively add your lowercase word
+        dictionary.add(wordL);              // add lowercase word to dictionary set
+
+        // Create a node for the word:
 
         // iterate through the length of the word
         for (int i = 0; i < wordL.length(); i++) {

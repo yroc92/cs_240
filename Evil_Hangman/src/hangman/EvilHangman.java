@@ -148,6 +148,7 @@ public class EvilHangman implements StudentEvilHangmanGameController {
             }
         }
 
+
         ArrayList<String> newDict = new ArrayList<>();
         newDict.addAll(maxSet);
         myDictionary = newDict;

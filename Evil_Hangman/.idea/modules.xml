@@ -2,9 +2,8 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/Evil_Hangman.iml" filepath="$PROJECT_DIR$/Evil_Hangman.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/lib/lib.iml" filepath="$PROJECT_DIR$/.idea/modules/lib/lib.iml" group="lib" />
-      <module fileurl="file://$PROJECT_DIR$/lib/lib.iml" filepath="$PROJECT_DIR$/lib/lib.iml" group="lib" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/Evil_Hangman.iml" filepath="$PROJECT_DIR$/.idea/modules/Evil_Hangman.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/lib/lib.iml" filepath="$PROJECT_DIR$/.idea/modules/lib/lib.iml" />
     </modules>
   </component>
 </project>
